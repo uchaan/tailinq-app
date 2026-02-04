@@ -47,26 +47,33 @@ lib/
 ### Data Flow
 
 1. `MockDeviceRepository` implements `DeviceRepository` interface
-2. Riverpod providers in `presentation/providers/` expose repository data to UI
-3. `isLiveModeProvider` controls real-time location streaming (2-second intervals)
-4. Screens consume providers via `ConsumerWidget`
+2. `MockPetRepository` implements `PetRepository` interface
+3. Riverpod providers in `presentation/providers/` expose repository data to UI
+4. `isLiveModeProvider` controls real-time location streaming (2-second intervals)
+5. Screens consume providers via `ConsumerWidget`
 
 ### Navigation
 
-GoRouter with 3 tabs via `ShellRoute`:
-- `/home` - Map view with device marker
-- `/activity` - Activity history (placeholder)
-- `/settings` - Settings (placeholder)
+GoRouter with authentication guard:
+- Auth routes: `/sign-in`, `/sign-up`, `/confirm-email`, `/forgot-password`, `/reset-password`
+- Protected routes via `ShellRoute`:
+  - `/home` - Map view with device marker (Google Maps)
+  - `/activity` - Activity history (placeholder)
+  - `/settings` - Settings with logout
 
 ### Models (Freezed)
 
-- `Device`: id, name, batteryLevel, status, isLiveMode, safeZoneRadius, lastLocation
+- `Pet`: id, name, imageUrl, species, breed, birthDate, deviceId
+- `PetMember`: id, petId, userId, role (owner/family/caretaker), joinedAt
+- `Device`: id, batteryLevel, status, isLiveMode, petId, safeZoneRadius, lastLocation
 - `Location`: latitude, longitude, timestamp
+- `User`: id, email, name, emailVerified
 
 After modifying models, always run `dart run build_runner build --delete-conflicting-outputs`.
 
 ### Current State
 
-- Mock data only (no real backend)
-- Map is a placeholder (green gradient with grid) - designed for easy Google Maps integration later
+- AWS Cognito authentication (email/password)
+- Google Maps integration with live tracking
+- Mock data for devices and pets (no real backend)
 - Live mode simulates marker movement with random offsets

@@ -14,11 +14,10 @@ enum DeviceStatus {
 class Device with _$Device {
   const factory Device({
     required String id,
-    required String name,
     required int batteryLevel,
     required DeviceStatus status,
     required bool isLiveMode,
-    String? imageUrl,
+    String? petId,
     @Default(100.0) double safeZoneRadius,
     Location? lastLocation,
   }) = _Device;

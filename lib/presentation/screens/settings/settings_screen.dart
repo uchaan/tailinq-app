@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../providers/auth_provider.dart';
 
@@ -91,6 +92,12 @@ class SettingsScreen extends ConsumerWidget {
           _SettingsSection(
             title: 'Account',
             children: [
+              _SettingsTile(
+                icon: Icons.pets,
+                title: 'Manage Pets',
+                subtitle: 'Add, edit, or remove your pets',
+                onTap: () => context.push('/pets'),
+              ),
               _SettingsTile(
                 icon: Icons.person_outline,
                 title: 'Edit Profile',

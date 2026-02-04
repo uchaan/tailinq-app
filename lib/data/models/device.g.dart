@@ -8,11 +8,10 @@ part of 'device.dart';
 
 _$DeviceImpl _$$DeviceImplFromJson(Map<String, dynamic> json) => _$DeviceImpl(
   id: json['id'] as String,
-  name: json['name'] as String,
   batteryLevel: (json['batteryLevel'] as num).toInt(),
   status: $enumDecode(_$DeviceStatusEnumMap, json['status']),
   isLiveMode: json['isLiveMode'] as bool,
-  imageUrl: json['imageUrl'] as String?,
+  petId: json['petId'] as String?,
   safeZoneRadius: (json['safeZoneRadius'] as num?)?.toDouble() ?? 100.0,
   lastLocation: json['lastLocation'] == null
       ? null
@@ -22,11 +21,10 @@ _$DeviceImpl _$$DeviceImplFromJson(Map<String, dynamic> json) => _$DeviceImpl(
 Map<String, dynamic> _$$DeviceImplToJson(_$DeviceImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'name': instance.name,
       'batteryLevel': instance.batteryLevel,
       'status': _$DeviceStatusEnumMap[instance.status]!,
       'isLiveMode': instance.isLiveMode,
-      'imageUrl': instance.imageUrl,
+      'petId': instance.petId,
       'safeZoneRadius': instance.safeZoneRadius,
       'lastLocation': instance.lastLocation,
     };

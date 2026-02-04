@@ -6,8 +6,10 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../core/constants/app_constants.dart';
 import '../../../data/models/location.dart';
+import '../../../data/models/pet.dart';
 import '../../providers/device_provider.dart';
 import '../../providers/location_provider.dart';
+import '../../providers/pet_provider.dart';
 import '../../widgets/device_bottom_sheet.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -36,7 +38,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Future<void> _animateToLocation(Location location) async {
-    if (_mapController == null) return;
+    if (!mounted || _mapController == null) return;
 
     await _mapController!.animateCamera(
       CameraUpdate.newLatLng(
@@ -48,6 +50,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final selectedDeviceAsync = ref.watch(selectedDeviceProvider);
+    final selectedPetAsync = ref.watch(selectedPetProvider);
     final locationAsync = ref.watch(locationStreamProvider);
     final isLiveMode = ref.watch(isLiveModeProvider);
 
@@ -75,7 +78,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       body: Stack(
         children: [
           // Google Map
-          _buildGoogleMap(selectedDeviceAsync, locationAsync, isLiveMode),
+          _buildGoogleMap(selectedDeviceAsync, selectedPetAsync, locationAsync, isLiveMode),
 
           // Bottom sheet
           Positioned(
@@ -87,10 +90,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 if (device == null) {
                   return const SizedBox.shrink();
                 }
-                return DeviceBottomSheet(device: device);
+                final pet = selectedPetAsync.valueOrNull;
+                return DeviceBottomSheet(device: device, pet: pet);
               },
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (_, _) => const Center(child: Text('Error loading device')),
+              error: (_, __) => const Center(child: Text('Error loading device')),
             ),
           ),
         ],
@@ -100,11 +104,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Widget _buildGoogleMap(
     AsyncValue<dynamic> selectedDeviceAsync,
+    AsyncValue<Pet?> selectedPetAsync,
     AsyncValue<Location?> locationAsync,
     bool isLiveMode,
   ) {
     // Build markers
     final markers = <Marker>{};
+    final petName = selectedPetAsync.valueOrNull?.name ?? 'Unknown';
 
     selectedDeviceAsync.whenData((device) {
       if (device == null) return;
@@ -126,7 +132,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             markerId: MarkerId(device.id),
             position: LatLng(markerLocation!.latitude, markerLocation!.longitude),
             infoWindow: InfoWindow(
-              title: device.name,
+              title: petName,
               snippet: isLiveMode ? 'Live Tracking' : 'Last known location',
             ),
             icon: BitmapDescriptor.defaultMarkerWithHue(

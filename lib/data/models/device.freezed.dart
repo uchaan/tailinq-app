@@ -22,11 +22,10 @@ Device _$DeviceFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Device {
   String get id => throw _privateConstructorUsedError;
-  String get name => throw _privateConstructorUsedError;
   int get batteryLevel => throw _privateConstructorUsedError;
   DeviceStatus get status => throw _privateConstructorUsedError;
   bool get isLiveMode => throw _privateConstructorUsedError;
-  String? get imageUrl => throw _privateConstructorUsedError;
+  String? get petId => throw _privateConstructorUsedError;
   double get safeZoneRadius => throw _privateConstructorUsedError;
   Location? get lastLocation => throw _privateConstructorUsedError;
 
@@ -46,11 +45,10 @@ abstract class $DeviceCopyWith<$Res> {
   @useResult
   $Res call({
     String id,
-    String name,
     int batteryLevel,
     DeviceStatus status,
     bool isLiveMode,
-    String? imageUrl,
+    String? petId,
     double safeZoneRadius,
     Location? lastLocation,
   });
@@ -74,11 +72,10 @@ class _$DeviceCopyWithImpl<$Res, $Val extends Device>
   @override
   $Res call({
     Object? id = null,
-    Object? name = null,
     Object? batteryLevel = null,
     Object? status = null,
     Object? isLiveMode = null,
-    Object? imageUrl = freezed,
+    Object? petId = freezed,
     Object? safeZoneRadius = null,
     Object? lastLocation = freezed,
   }) {
@@ -87,10 +84,6 @@ class _$DeviceCopyWithImpl<$Res, $Val extends Device>
             id: null == id
                 ? _value.id
                 : id // ignore: cast_nullable_to_non_nullable
-                      as String,
-            name: null == name
-                ? _value.name
-                : name // ignore: cast_nullable_to_non_nullable
                       as String,
             batteryLevel: null == batteryLevel
                 ? _value.batteryLevel
@@ -104,9 +97,9 @@ class _$DeviceCopyWithImpl<$Res, $Val extends Device>
                 ? _value.isLiveMode
                 : isLiveMode // ignore: cast_nullable_to_non_nullable
                       as bool,
-            imageUrl: freezed == imageUrl
-                ? _value.imageUrl
-                : imageUrl // ignore: cast_nullable_to_non_nullable
+            petId: freezed == petId
+                ? _value.petId
+                : petId // ignore: cast_nullable_to_non_nullable
                       as String?,
             safeZoneRadius: null == safeZoneRadius
                 ? _value.safeZoneRadius
@@ -146,11 +139,10 @@ abstract class _$$DeviceImplCopyWith<$Res> implements $DeviceCopyWith<$Res> {
   @useResult
   $Res call({
     String id,
-    String name,
     int batteryLevel,
     DeviceStatus status,
     bool isLiveMode,
-    String? imageUrl,
+    String? petId,
     double safeZoneRadius,
     Location? lastLocation,
   });
@@ -174,11 +166,10 @@ class __$$DeviceImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
-    Object? name = null,
     Object? batteryLevel = null,
     Object? status = null,
     Object? isLiveMode = null,
-    Object? imageUrl = freezed,
+    Object? petId = freezed,
     Object? safeZoneRadius = null,
     Object? lastLocation = freezed,
   }) {
@@ -187,10 +178,6 @@ class __$$DeviceImplCopyWithImpl<$Res>
         id: null == id
             ? _value.id
             : id // ignore: cast_nullable_to_non_nullable
-                  as String,
-        name: null == name
-            ? _value.name
-            : name // ignore: cast_nullable_to_non_nullable
                   as String,
         batteryLevel: null == batteryLevel
             ? _value.batteryLevel
@@ -204,9 +191,9 @@ class __$$DeviceImplCopyWithImpl<$Res>
             ? _value.isLiveMode
             : isLiveMode // ignore: cast_nullable_to_non_nullable
                   as bool,
-        imageUrl: freezed == imageUrl
-            ? _value.imageUrl
-            : imageUrl // ignore: cast_nullable_to_non_nullable
+        petId: freezed == petId
+            ? _value.petId
+            : petId // ignore: cast_nullable_to_non_nullable
                   as String?,
         safeZoneRadius: null == safeZoneRadius
             ? _value.safeZoneRadius
@@ -226,11 +213,10 @@ class __$$DeviceImplCopyWithImpl<$Res>
 class _$DeviceImpl implements _Device {
   const _$DeviceImpl({
     required this.id,
-    required this.name,
     required this.batteryLevel,
     required this.status,
     required this.isLiveMode,
-    this.imageUrl,
+    this.petId,
     this.safeZoneRadius = 100.0,
     this.lastLocation,
   });
@@ -241,15 +227,13 @@ class _$DeviceImpl implements _Device {
   @override
   final String id;
   @override
-  final String name;
-  @override
   final int batteryLevel;
   @override
   final DeviceStatus status;
   @override
   final bool isLiveMode;
   @override
-  final String? imageUrl;
+  final String? petId;
   @override
   @JsonKey()
   final double safeZoneRadius;
@@ -258,7 +242,7 @@ class _$DeviceImpl implements _Device {
 
   @override
   String toString() {
-    return 'Device(id: $id, name: $name, batteryLevel: $batteryLevel, status: $status, isLiveMode: $isLiveMode, imageUrl: $imageUrl, safeZoneRadius: $safeZoneRadius, lastLocation: $lastLocation)';
+    return 'Device(id: $id, batteryLevel: $batteryLevel, status: $status, isLiveMode: $isLiveMode, petId: $petId, safeZoneRadius: $safeZoneRadius, lastLocation: $lastLocation)';
   }
 
   @override
@@ -267,14 +251,12 @@ class _$DeviceImpl implements _Device {
         (other.runtimeType == runtimeType &&
             other is _$DeviceImpl &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.name, name) || other.name == name) &&
             (identical(other.batteryLevel, batteryLevel) ||
                 other.batteryLevel == batteryLevel) &&
             (identical(other.status, status) || other.status == status) &&
             (identical(other.isLiveMode, isLiveMode) ||
                 other.isLiveMode == isLiveMode) &&
-            (identical(other.imageUrl, imageUrl) ||
-                other.imageUrl == imageUrl) &&
+            (identical(other.petId, petId) || other.petId == petId) &&
             (identical(other.safeZoneRadius, safeZoneRadius) ||
                 other.safeZoneRadius == safeZoneRadius) &&
             (identical(other.lastLocation, lastLocation) ||
@@ -286,11 +268,10 @@ class _$DeviceImpl implements _Device {
   int get hashCode => Object.hash(
     runtimeType,
     id,
-    name,
     batteryLevel,
     status,
     isLiveMode,
-    imageUrl,
+    petId,
     safeZoneRadius,
     lastLocation,
   );
@@ -312,11 +293,10 @@ class _$DeviceImpl implements _Device {
 abstract class _Device implements Device {
   const factory _Device({
     required final String id,
-    required final String name,
     required final int batteryLevel,
     required final DeviceStatus status,
     required final bool isLiveMode,
-    final String? imageUrl,
+    final String? petId,
     final double safeZoneRadius,
     final Location? lastLocation,
   }) = _$DeviceImpl;
@@ -326,15 +306,13 @@ abstract class _Device implements Device {
   @override
   String get id;
   @override
-  String get name;
-  @override
   int get batteryLevel;
   @override
   DeviceStatus get status;
   @override
   bool get isLiveMode;
   @override
-  String? get imageUrl;
+  String? get petId;
   @override
   double get safeZoneRadius;
   @override

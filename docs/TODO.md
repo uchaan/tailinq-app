@@ -11,6 +11,7 @@
 | 프로젝트 기반 | 100% | ✅ 완료 |
 | 인증 시스템 | 80% | 🔄 진행중 |
 | 지도 및 위치 | 50% | 🔄 진행중 |
+| 펫 관리 | 90% | 🔄 진행중 |
 | 디바이스 관리 | 50% | 🔄 진행중 |
 | Activity 화면 | 0% | ⬜ 대기 |
 | 백엔드 연동 | 0% | ⬜ 대기 |
@@ -28,6 +29,7 @@
 - [x] Material Design 3 테마 (Green 기반, Light Mode)
 - [x] Freezed 모델 (Device, Location, User)
 - [x] Mock Repository 패턴
+- [x] Storage Repository 인터페이스 및 Mock 구현 (S3 연동 준비)
 
 ---
 
@@ -110,7 +112,47 @@
 
 ---
 
-## 4. 디바이스 관리 (Device Management)
+## 4. 펫 관리 (Pet Management)
+
+### ✅ 완료됨
+- [x] Pet 모델 생성 (id, name, imageUrl, species, breed, birthDate, deviceId)
+- [x] PetMember 모델 생성 (User-Pet 다대다 관계, role: owner/family/caretaker)
+- [x] Device 모델에서 펫 관련 필드 분리 (name, imageUrl → Pet으로 이동)
+- [x] PetRepository 인터페이스 생성
+- [x] MockPetRepository 구현
+- [x] Pet Provider 생성 (PetNotifier with CRUD operations)
+- [x] UI 컴포넌트 업데이트 (DeviceBottomSheet, HomeScreen)
+- [x] **펫 프로필 관리**
+  - 펫 목록 화면 (`/pets`)
+  - 펫 추가 화면 (`/pets/add`)
+  - 펫 상세 화면 (`/pets/:id`)
+  - 펫 수정 화면 (`/pets/:id/edit`)
+  - 펫 삭제 (확인 다이얼로그)
+  - 펫 정보 편집 (이름, 종, 품종, 생년월일)
+  - 펫 이미지 선택 (카메라/갤러리)
+  - Mock Storage (base64 data URL) - S3 연동 준비 완료
+- [x] **펫 전환**
+  - 여러 펫 지원
+  - 펫 선택 UI (Home Tab, Manage Pets 화면)
+  - 선택된 펫 상태 관리 (selectedPetIdProvider)
+  - 기본 프로필 사진 (종별 이모지: 🐕🐱🐦🐰)
+- [x] Settings 화면에 "Manage Pets" 메뉴 추가
+
+### ⬜ 추후 작업
+- [ ] **AWS S3 이미지 업로드**
+  - `amplify_storage_s3` 패키지 연동
+  - MockStorageRepository → S3StorageRepository 교체
+  - 이미지 압축/리사이즈
+
+- [ ] **펫 공유 (가족 기능)**
+  - 초대 코드 생성
+  - 초대 수락/거절
+  - 멤버 역할 관리 (owner, family, caretaker)
+  - 멤버 목록 조회/삭제
+
+---
+
+## 5. 디바이스 관리 (Device Management)
 
 ### ✅ 완료됨
 - [x] Device 모델 (id, name, battery, status, location)
@@ -118,6 +160,7 @@
 - [x] 배터리 레벨 표시
 - [x] 온라인/오프라인 상태 표시
 - [x] Mock 디바이스 데이터 (Max, Bella)
+- [x] Home Tab에서 펫 전환 기능 (DeviceBottomSheet)
 
 ### ⬜ 추후 작업
 - [ ] **디바이스 등록**
@@ -142,7 +185,7 @@
 
 ---
 
-## 5. Activity 화면 (Activity History)
+## 6. Activity 화면 (Activity History)
 
 ### ✅ 완료됨
 - [x] Activity 화면 Placeholder
@@ -165,7 +208,7 @@
 
 ---
 
-## 6. 백엔드 연동 (Backend Integration)
+## 7. 백엔드 연동 (Backend Integration)
 
 ### ⬜ 추후 작업
 - [ ] **API 클라이언트 설정**
@@ -188,13 +231,23 @@
   - GET /users/me - 내 정보
   - PUT /users/me - 프로필 업데이트
 
+- [ ] **펫 API**
+  - GET /pets - 펫 목록
+  - GET /pets/{id} - 펫 상세
+  - POST /pets - 펫 등록
+  - PUT /pets/{id} - 펫 업데이트
+  - DELETE /pets/{id} - 펫 삭제
+  - POST /pets/{id}/image - 이미지 업로드
+
 - [ ] **Repository 교체**
   - MockDeviceRepository → ApiDeviceRepository
+  - MockPetRepository → ApiPetRepository
+  - MockStorageRepository → S3StorageRepository
   - 환경별 설정 (dev/staging/prod)
 
 ---
 
-## 7. 알림 시스템 (Notifications)
+## 8. 알림 시스템 (Notifications)
 
 ### ⬜ 추후 작업
 - [ ] **로컬 알림**
@@ -214,7 +267,7 @@
 
 ---
 
-## 8. 테스트 및 품질 (Testing & Quality)
+## 9. 테스트 및 품질 (Testing & Quality)
 
 ### ⬜ 추후 작업
 - [ ] **단위 테스트**
@@ -240,23 +293,52 @@
 
 ### Phase 1: 핵심 기능 완성
 1. ~~Google Maps 연동~~ ✅
-2. 현실적인 위치 시뮬레이션
-3. Geofencing 구현
+2. ~~펫 프로필 관리~~ ✅
+3. ~~펫 전환 기능~~ ✅
+4. 현실적인 위치 시뮬레이션
+5. Geofencing 구현
 
 ### Phase 2: 백엔드 연동
-4. API 클라이언트 설정
-5. 디바이스/위치 API 연동
-6. Mock Repository 교체
+6. API 클라이언트 설정
+7. 디바이스/위치/펫 API 연동
+8. Mock Repository 교체
+9. S3 이미지 업로드 연동
 
 ### Phase 3: 사용자 경험 향상
-7. Activity 화면 구현
-8. 알림 시스템 구현
-9. 소셜 로그인 연동
+10. Activity 화면 구현
+11. 알림 시스템 구현
+12. 소셜 로그인 연동
 
 ### Phase 4: 완성도 향상
-10. 프로필 관리
-11. 디바이스 설정
-12. 테스트 코드 작성
+13. 사용자 프로필 관리
+14. 디바이스 설정
+15. 펫 공유 (가족 기능)
+16. 테스트 코드 작성
+
+---
+
+## 최근 완료된 작업 (2026-02-04)
+
+### 펫 프로필 관리 기능 구현
+- **새로 생성된 파일:**
+  - `lib/domain/repositories/storage_repository.dart`
+  - `lib/data/repositories/mock_storage_repository.dart`
+  - `lib/presentation/providers/storage_provider.dart`
+  - `lib/presentation/screens/pet/pet_list_screen.dart`
+  - `lib/presentation/screens/pet/pet_add_screen.dart`
+  - `lib/presentation/screens/pet/pet_detail_screen.dart`
+  - `lib/presentation/screens/pet/pet_edit_screen.dart`
+  - `lib/presentation/widgets/pet/pet_form.dart`
+  - `lib/presentation/widgets/pet/pet_image_picker.dart`
+  - `lib/presentation/widgets/pet/pet_list_item.dart`
+  - `lib/presentation/widgets/pet/species_selector.dart`
+
+- **수정된 파일:**
+  - `pubspec.yaml` - image_picker, uuid 패키지 추가
+  - `lib/presentation/router/app_router.dart` - Pet 라우트 추가
+  - `lib/presentation/providers/pet_provider.dart` - PetNotifier 추가
+  - `lib/presentation/screens/settings/settings_screen.dart` - Manage Pets 메뉴
+  - `lib/presentation/widgets/device_bottom_sheet.dart` - 기본 아바타, 펫 전환
 
 ---
 

@@ -9,12 +9,11 @@ class MockDataSource {
   List<Device> getMockDevices() {
     return [
       Device(
-        id: '1',
-        name: 'Max',
+        id: 'device-1',
         batteryLevel: 85,
         status: DeviceStatus.online,
         isLiveMode: false,
-        imageUrl: null,
+        petId: 'pet-1',
         safeZoneRadius: 100.0,
         lastLocation: Location(
           latitude: AppConstants.defaultLatitude,
@@ -23,12 +22,11 @@ class MockDataSource {
         ),
       ),
       Device(
-        id: '2',
-        name: 'Bella',
+        id: 'device-2',
         batteryLevel: 45,
         status: DeviceStatus.lowBattery,
         isLiveMode: false,
-        imageUrl: null,
+        petId: 'pet-2',
         safeZoneRadius: 150.0,
         lastLocation: Location(
           latitude: AppConstants.defaultLatitude + 0.002,

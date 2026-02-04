@@ -13,7 +13,7 @@ final devicesProvider = FutureProvider<List<Device>>((ref) async {
   return repository.getDevices();
 });
 
-final selectedDeviceIdProvider = StateProvider<String?>((ref) => '1');
+final selectedDeviceIdProvider = StateProvider<String?>((ref) => 'device-1');
 
 final selectedDeviceProvider = FutureProvider<Device?>((ref) async {
   final deviceId = ref.watch(selectedDeviceIdProvider);
