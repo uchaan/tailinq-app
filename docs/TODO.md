@@ -10,7 +10,7 @@
 |---------|--------|------|
 | 프로젝트 기반 | 100% | ✅ 완료 |
 | 인증 시스템 | 80% | 🔄 진행중 |
-| 지도 및 위치 | 30% | 🔄 진행중 |
+| 지도 및 위치 | 50% | 🔄 진행중 |
 | 디바이스 관리 | 50% | 🔄 진행중 |
 | Activity 화면 | 0% | ⬜ 대기 |
 | 백엔드 연동 | 0% | ⬜ 대기 |
@@ -72,7 +72,6 @@
 ## 3. 지도 및 위치 (Map & Location)
 
 ### ✅ 완료됨
-- [x] 지도 Placeholder UI (녹색 그라데이션 + 그리드)
 - [x] 마커 표시 (펫 위치)
 - [x] Live Mode 토글
 - [x] 깜빡이는 LIVE 뱃지
@@ -80,22 +79,20 @@
 - [x] **Google Maps 연동**
   - `google_maps_flutter` 패키지 추가
   - Google Maps API 키 설정
-  - iOS/Android 플랫폼 설정
+  - Android/iOS/Web 플랫폼별 설정
   - GoogleMap 위젯으로 교체
   - Live Mode 시 카메라 자동 팔로우
+  - 마커 색상 변경 (Live: 빨강, 일반: 초록)
 
-### 🔄 진행 필요
-
+### ⬜ 추후 작업
 - [ ] **커스텀 마커**
   - 펫 프로필 이미지 마커
   - 마커 클러스터링 (여러 펫 시)
 
-- [ ] **카메라 컨트롤**
-  - Live Mode 시 마커 자동 팔로우
-  - 줌 인/아웃 컨트롤
+- [ ] **카메라 컨트롤 개선**
+  - 줌 인/아웃 버튼
   - 현재 위치로 이동 버튼
 
-### ⬜ 추후 작업
 - [ ] **현실적인 위치 시뮬레이션**
   - Location Move Scenario Generator
   - 실제 경로 기반 이동 패턴 (공원 산책, 집 주변 등)
@@ -242,7 +239,7 @@
 ## 우선순위 작업 순서 (권장)
 
 ### Phase 1: 핵심 기능 완성
-1. Google Maps 연동
+1. ~~Google Maps 연동~~ ✅
 2. 현실적인 위치 시뮬레이션
 3. Geofencing 구현
 
@@ -270,4 +267,5 @@
 | `docs/tailinq_app_mvp.md` | MVP 요구사항 정의 |
 | `docs/IMPLEMENTATION.md` | 구현 상세 문서 |
 | `docs/TESTING.md` | 테스트 가이드 |
+| `docs/API_SETUP.md` | API 키 설정 가이드 |
 | `CLAUDE.md` | Claude Code 가이드 |

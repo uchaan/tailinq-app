@@ -13,19 +13,17 @@ import '../screens/home/home_screen.dart';
 import '../screens/activity/activity_screen.dart';
 import '../screens/settings/settings_screen.dart';
 
-final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
-final GlobalKey<NavigatorState> _shellNavigatorKey =
-    GlobalKey<NavigatorState>();
-
 /// Provider for the GoRouter instance
 final appRouterProvider = Provider<GoRouter>((ref) {
-  final authState = ref.watch(authProvider);
+  final rootNavigatorKey = GlobalKey<NavigatorState>();
+  final shellNavigatorKey = GlobalKey<NavigatorState>();
 
   return GoRouter(
-    navigatorKey: _rootNavigatorKey,
+    navigatorKey: rootNavigatorKey,
     initialLocation: '/home',
     refreshListenable: _AuthRefreshNotifier(ref),
     redirect: (context, state) {
+      final authState = ref.read(authProvider);
       final isAuthenticated = authState.status == AuthStatus.authenticated;
       final isAuthRoute = state.matchedLocation == '/sign-in' ||
           state.matchedLocation == '/sign-up' ||
@@ -90,7 +88,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
 
       // Protected routes
       ShellRoute(
-        navigatorKey: _shellNavigatorKey,
+        navigatorKey: shellNavigatorKey,
         builder: (context, state, child) {
           return ScaffoldWithNavBar(child: child);
         },
