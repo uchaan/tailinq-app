@@ -1,9 +1,22 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../data/models/device.dart';
 import '../../data/repositories/mock_device_repository.dart';
+import 'simulation_provider.dart';
 
 final deviceRepositoryProvider = Provider<MockDeviceRepository>((ref) {
   final repository = MockDeviceRepository();
+
+  // 시뮬레이션 상태 변경 시 시뮬레이터 연결
+  ref.listen(simulationProvider, (previous, next) {
+    if (next.isEnabled && next.isRunning) {
+      final notifier = ref.read(simulationProvider.notifier);
+      repository.setSimulator(notifier.simulator);
+    } else {
+      repository.setSimulator(null);
+    }
+  });
+
   ref.onDispose(() => repository.dispose());
   return repository;
 });

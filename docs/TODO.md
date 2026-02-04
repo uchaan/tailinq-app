@@ -10,7 +10,7 @@
 |---------|--------|------|
 | 프로젝트 기반 | 100% | ✅ 완료 |
 | 인증 시스템 | 80% | 🔄 진행중 |
-| 지도 및 위치 | 50% | 🔄 진행중 |
+| 지도 및 위치 | 70% | 🔄 진행중 |
 | 펫 관리 | 90% | 🔄 진행중 |
 | 디바이스 관리 | 50% | 🔄 진행중 |
 | Activity 화면 | 0% | ⬜ 대기 |
@@ -85,6 +85,15 @@
   - GoogleMap 위젯으로 교체
   - Live Mode 시 카메라 자동 팔로우
   - 마커 색상 변경 (Live: 빨강, 일반: 초록)
+- [x] **위치 시뮬레이션 (테스트/데모용)**
+  - LocationSimulator 서비스 구현
+  - 5개 시나리오: Idle, Walking, Running, Exploring, Returning
+  - Waypoint 기반 랜덤 경로 생성
+  - SimulationControlPanel UI (DeviceBottomSheet 내)
+  - 시뮬레이션 활성화/비활성화, 시작/일시정지/정지
+  - Live Mode와 독립적으로 동작
+  - 마커 색상 변경 (시뮬레이션: 오렌지)
+  - 수동 카메라 포커스 버튼 (my_location)
 
 ### ⬜ 추후 작업
 - [ ] **커스텀 마커**
@@ -93,13 +102,6 @@
 
 - [ ] **카메라 컨트롤 개선**
   - 줌 인/아웃 버튼
-  - 현재 위치로 이동 버튼
-
-- [ ] **현실적인 위치 시뮬레이션**
-  - Location Move Scenario Generator
-  - 실제 경로 기반 이동 패턴 (공원 산책, 집 주변 등)
-  - 속도 변화 시뮬레이션 (걷기, 뛰기, 정지)
-  - 시간대별 행동 패턴
 
 - [ ] **Geofencing (Safe Zone)**
   - Safe Zone 원형 영역 표시
@@ -295,7 +297,7 @@
 1. ~~Google Maps 연동~~ ✅
 2. ~~펫 프로필 관리~~ ✅
 3. ~~펫 전환 기능~~ ✅
-4. 현실적인 위치 시뮬레이션
+4. ~~위치 시뮬레이션~~ ✅
 5. Geofencing 구현
 
 ### Phase 2: 백엔드 연동
@@ -318,6 +320,19 @@
 ---
 
 ## 최근 완료된 작업 (2026-02-04)
+
+### 위치 시뮬레이션 기능 구현
+- **새로 생성된 파일:**
+  - `lib/data/services/location_simulator.dart` - 시뮬레이션 엔진
+  - `lib/presentation/providers/simulation_provider.dart` - 시뮬레이션 상태 관리
+  - `lib/presentation/widgets/simulation_control_panel.dart` - 시뮬레이션 UI
+
+- **수정된 파일:**
+  - `lib/presentation/screens/home/home_screen.dart` - 시뮬레이션 마커 표시, 수동 포커스 버튼
+  - `lib/presentation/providers/location_provider.dart` - 시뮬레이션 스트림 연동
+  - `lib/presentation/providers/device_provider.dart` - 시뮬레이터 연결
+  - `lib/data/repositories/mock_device_repository.dart` - 시뮬레이터 통합
+  - `lib/presentation/widgets/device_bottom_sheet.dart` - SimulationControlPanel 추가
 
 ### 펫 프로필 관리 기능 구현
 - **새로 생성된 파일:**

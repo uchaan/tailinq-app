@@ -9,6 +9,7 @@ import '../../data/models/pet.dart';
 import '../providers/device_provider.dart';
 import '../providers/pet_provider.dart';
 import 'blinking_live_badge.dart';
+import 'simulation_control_panel.dart';
 
 class DeviceBottomSheet extends ConsumerWidget {
   final Device device;
@@ -233,6 +234,10 @@ class DeviceBottomSheet extends ConsumerWidget {
               ),
             ),
           ],
+          const SizedBox(height: 16),
+          const Divider(),
+          const SizedBox(height: 8),
+          const SimulationControlPanel(),
           const SizedBox(height: 16),
         ],
       ),
