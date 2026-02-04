@@ -39,6 +39,7 @@ dependencies:
   json_annotation: ^4.8.0
   amplify_flutter: ^2.0.0
   amplify_auth_cognito: ^2.0.0
+  google_maps_flutter: ^2.5.0
 
 dev_dependencies:
   flutter_test:

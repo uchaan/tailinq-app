@@ -77,13 +77,14 @@
 - [x] Live Mode 토글
 - [x] 깜빡이는 LIVE 뱃지
 - [x] Mock 위치 스트림 (2초 간격)
+- [x] **Google Maps 연동**
+  - `google_maps_flutter` 패키지 추가
+  - Google Maps API 키 설정
+  - iOS/Android 플랫폼 설정
+  - GoogleMap 위젯으로 교체
+  - Live Mode 시 카메라 자동 팔로우
 
 ### 🔄 진행 필요
-- [ ] **Google Maps 연동**
-  - `google_maps_flutter` 패키지 추가
-  - Google Maps API 키 발급 및 설정
-  - iOS/Android/Web 플랫폼별 설정
-  - Placeholder를 실제 Google Map으로 교체
 
 - [ ] **커스텀 마커**
   - 펫 프로필 이미지 마커
