@@ -1,4 +1,4 @@
-# tailinq_mobile
+# tailinq_app
 
 A new Flutter project.
 

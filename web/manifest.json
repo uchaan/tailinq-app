@@ -1,6 +1,6 @@
 {
-    "name": "tailinq_mobile",
-    "short_name": "tailinq_mobile",
+    "name": "tailinq_app",
+    "short_name": "tailinq_app",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

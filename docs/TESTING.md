@@ -119,7 +119,7 @@ flutter analyze lib/
 ### macOS Debug Build
 ```bash
 flutter build macos --debug
-# 결과: build/macos/Build/Products/Debug/tailinq_mobile.app 생성
+# 결과: build/macos/Build/Products/Debug/tailinq_app.app 생성
 ```
 
 ### iOS Debug Build (Simulator용)
