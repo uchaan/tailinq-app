@@ -1,5 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../domain/repositories/auth_repository.dart';
+import '../providers/auth_provider.dart';
+import '../screens/auth/confirm_email_screen.dart';
+import '../screens/auth/forgot_password_screen.dart';
+import '../screens/auth/reset_password_screen.dart';
+import '../screens/auth/sign_in_screen.dart';
+import '../screens/auth/sign_up_screen.dart';
 import '../screens/home/home_screen.dart';
 import '../screens/activity/activity_screen.dart';
 import '../screens/settings/settings_screen.dart';
@@ -8,32 +17,112 @@ final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
 final GlobalKey<NavigatorState> _shellNavigatorKey =
     GlobalKey<NavigatorState>();
 
-final appRouter = GoRouter(
-  navigatorKey: _rootNavigatorKey,
-  initialLocation: '/home',
-  routes: [
-    ShellRoute(
-      navigatorKey: _shellNavigatorKey,
-      builder: (context, state, child) {
-        return ScaffoldWithNavBar(child: child);
-      },
-      routes: [
-        GoRoute(
-          path: '/home',
-          builder: (context, state) => const HomeScreen(),
-        ),
-        GoRoute(
-          path: '/activity',
-          builder: (context, state) => const ActivityScreen(),
-        ),
-        GoRoute(
-          path: '/settings',
-          builder: (context, state) => const SettingsScreen(),
-        ),
-      ],
-    ),
-  ],
-);
+/// Provider for the GoRouter instance
+final appRouterProvider = Provider<GoRouter>((ref) {
+  final authState = ref.watch(authProvider);
+
+  return GoRouter(
+    navigatorKey: _rootNavigatorKey,
+    initialLocation: '/home',
+    refreshListenable: _AuthRefreshNotifier(ref),
+    redirect: (context, state) {
+      final isAuthenticated = authState.status == AuthStatus.authenticated;
+      final isAuthRoute = state.matchedLocation == '/sign-in' ||
+          state.matchedLocation == '/sign-up' ||
+          state.matchedLocation == '/confirm-email' ||
+          state.matchedLocation == '/forgot-password' ||
+          state.matchedLocation == '/reset-password';
+
+      // If status is unknown (still checking), don't redirect yet
+      if (authState.status == AuthStatus.unknown) {
+        return null;
+      }
+
+      // If needs confirmation, redirect to confirm email
+      if (authState.status == AuthStatus.confirmationRequired &&
+          state.matchedLocation != '/confirm-email') {
+        final email = authState.pendingEmail ?? '';
+        return '/confirm-email?email=$email';
+      }
+
+      // If not authenticated and trying to access protected route
+      if (!isAuthenticated && !isAuthRoute) {
+        return '/sign-in';
+      }
+
+      // If authenticated and trying to access auth route
+      if (isAuthenticated && isAuthRoute) {
+        return '/home';
+      }
+
+      return null;
+    },
+    routes: [
+      // Auth routes (public)
+      GoRoute(
+        path: '/sign-in',
+        builder: (context, state) => const SignInScreen(),
+      ),
+      GoRoute(
+        path: '/sign-up',
+        builder: (context, state) => const SignUpScreen(),
+      ),
+      GoRoute(
+        path: '/confirm-email',
+        builder: (context, state) {
+          final email = state.extra as String? ??
+              state.uri.queryParameters['email'] ??
+              '';
+          return ConfirmEmailScreen(email: email);
+        },
+      ),
+      GoRoute(
+        path: '/forgot-password',
+        builder: (context, state) => const ForgotPasswordScreen(),
+      ),
+      GoRoute(
+        path: '/reset-password',
+        builder: (context, state) {
+          final email = state.extra as String? ?? '';
+          return ResetPasswordScreen(email: email);
+        },
+      ),
+
+      // Protected routes
+      ShellRoute(
+        navigatorKey: _shellNavigatorKey,
+        builder: (context, state, child) {
+          return ScaffoldWithNavBar(child: child);
+        },
+        routes: [
+          GoRoute(
+            path: '/home',
+            builder: (context, state) => const HomeScreen(),
+          ),
+          GoRoute(
+            path: '/activity',
+            builder: (context, state) => const ActivityScreen(),
+          ),
+          GoRoute(
+            path: '/settings',
+            builder: (context, state) => const SettingsScreen(),
+          ),
+        ],
+      ),
+    ],
+  );
+});
+
+/// Listenable that triggers router refresh when auth state changes
+class _AuthRefreshNotifier extends ChangeNotifier {
+  _AuthRefreshNotifier(this._ref) {
+    _ref.listen(authProvider, (_, __) {
+      notifyListeners();
+    });
+  }
+
+  final Ref _ref;
+}
 
 class ScaffoldWithNavBar extends StatelessWidget {
   final Widget child;
