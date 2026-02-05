@@ -16,6 +16,9 @@ class PetMember with _$PetMember {
     required String petId,
     required String userId,
     @Default(PetMemberRole.owner) PetMemberRole role,
+    @Default(false) bool isPrimary,
+    String? userName,
+    String? userEmail,
     required DateTime joinedAt,
   }) = _PetMember;
 

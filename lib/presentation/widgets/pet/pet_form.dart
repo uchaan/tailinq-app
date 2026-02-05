@@ -20,6 +20,7 @@ class PetForm extends StatelessWidget {
   final ValueChanged<Uint8List?> onImageSelected;
   final VoidCallback onSubmit;
   final String submitButtonText;
+  final Widget? bottomContent;
 
   const PetForm({
     super.key,
@@ -36,6 +37,7 @@ class PetForm extends StatelessWidget {
     required this.onImageSelected,
     required this.onSubmit,
     required this.submitButtonText,
+    this.bottomContent,
   });
 
   Future<void> _selectDate(BuildContext context) async {
@@ -148,6 +150,10 @@ class PetForm extends StatelessWidget {
                 ),
               ),
             ),
+            if (bottomContent != null) ...[
+              const SizedBox(height: 32),
+              bottomContent!,
+            ],
             const SizedBox(height: 32),
 
             // Submit button

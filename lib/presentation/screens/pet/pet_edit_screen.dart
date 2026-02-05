@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../data/models/pet.dart';
 import '../../providers/pet_provider.dart';
+import '../../widgets/pet/parent_management_section.dart';
 import '../../widgets/pet/pet_form.dart';
 
 class PetEditScreen extends ConsumerStatefulWidget {
@@ -210,6 +211,10 @@ class _PetEditScreenState extends ConsumerState<PetEditScreen> {
             },
             onSubmit: _savePet,
             submitButtonText: 'Save Changes',
+            bottomContent: ParentManagementSection(
+              petId: widget.petId,
+              isLoading: _isLoading,
+            ),
           ),
         );
       },

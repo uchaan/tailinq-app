@@ -14,6 +14,9 @@ _$PetMemberImpl _$$PetMemberImplFromJson(Map<String, dynamic> json) =>
       role:
           $enumDecodeNullable(_$PetMemberRoleEnumMap, json['role']) ??
           PetMemberRole.owner,
+      isPrimary: json['isPrimary'] as bool? ?? false,
+      userName: json['userName'] as String?,
+      userEmail: json['userEmail'] as String?,
       joinedAt: DateTime.parse(json['joinedAt'] as String),
     );
 
@@ -23,6 +26,9 @@ Map<String, dynamic> _$$PetMemberImplToJson(_$PetMemberImpl instance) =>
       'petId': instance.petId,
       'userId': instance.userId,
       'role': _$PetMemberRoleEnumMap[instance.role]!,
+      'isPrimary': instance.isPrimary,
+      'userName': instance.userName,
+      'userEmail': instance.userEmail,
       'joinedAt': instance.joinedAt.toIso8601String(),
     };
 

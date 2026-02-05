@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../data/models/pet.dart';
+import '../../../data/models/pet_member.dart';
 import '../../providers/pet_provider.dart';
 
 class PetDetailScreen extends ConsumerWidget {
@@ -259,6 +260,10 @@ class PetDetailScreen extends ConsumerWidget {
                           value: 'Connected',
                         ),
                       ],
+                      const SizedBox(height: 24),
+                      const Divider(),
+                      const SizedBox(height: 16),
+                      _ParentsSection(petId: pet.id),
                     ],
                   ),
                 ),
@@ -308,6 +313,95 @@ class _InfoRow extends StatelessWidget {
           ],
         ),
       ],
+    );
+  }
+}
+
+class _ParentsSection extends ConsumerWidget {
+  final String petId;
+
+  const _ParentsSection({required this.petId});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final membersState = ref.watch(petMemberNotifierProvider(petId));
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Parents',
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+        ),
+        const SizedBox(height: 12),
+        membersState.when(
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, _) => Text('Error: $error',
+              style: const TextStyle(color: Colors.red)),
+          data: (members) {
+            if (members.isEmpty) {
+              return const Text('No parents added yet.');
+            }
+            return Card(
+              clipBehavior: Clip.antiAlias,
+              child: Column(
+                children: [
+                  for (int i = 0; i < members.length; i++) ...[
+                    if (i > 0) const Divider(height: 1),
+                    _buildMemberTile(context, members[i]),
+                  ],
+                ],
+              ),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMemberTile(BuildContext context, PetMember member) {
+    final initials = (member.userName ?? 'U')
+        .split(' ')
+        .map((w) => w.isNotEmpty ? w[0].toUpperCase() : '')
+        .take(2)
+        .join();
+
+    final roleName =
+        member.role.name[0].toUpperCase() + member.role.name.substring(1);
+
+    return ListTile(
+      leading: CircleAvatar(
+        backgroundColor:
+            member.isPrimary ? Theme.of(context).primaryColor : Colors.grey[300],
+        foregroundColor: member.isPrimary ? Colors.white : Colors.black87,
+        child: Text(initials),
+      ),
+      title: Row(
+        children: [
+          Flexible(child: Text(member.userName ?? 'Unknown')),
+          if (member.isPrimary) ...[
+            const SizedBox(width: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                'Primary',
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
+            ),
+          ],
+        ],
+      ),
+      subtitle: Text(roleName),
     );
   }
 }

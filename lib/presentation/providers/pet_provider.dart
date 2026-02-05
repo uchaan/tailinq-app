@@ -6,6 +6,7 @@ import 'package:uuid/uuid.dart';
 import '../../data/models/pet.dart';
 import '../../data/models/pet_member.dart';
 import '../../data/repositories/mock_pet_repository.dart';
+import '../../domain/repositories/pet_repository.dart';
 import '../../domain/repositories/storage_repository.dart';
 import 'storage_provider.dart';
 
@@ -130,5 +131,74 @@ class PetNotifier extends StateNotifier<AsyncValue<List<Pet>>> {
     }
     await _repository.deletePet(id);
     await loadPets();
+  }
+}
+
+final petMemberNotifierProvider = StateNotifierProvider
+    .family<PetMemberNotifier, AsyncValue<List<PetMember>>, String>(
+  (ref, petId) {
+    final repository = ref.watch(petRepositoryProvider);
+    return PetMemberNotifier(repository, petId);
+  },
+);
+
+class PetMemberNotifier extends StateNotifier<AsyncValue<List<PetMember>>> {
+  final PetRepository _repository;
+  final String _petId;
+  final _uuid = const Uuid();
+
+  PetMemberNotifier(this._repository, this._petId)
+      : super(const AsyncValue.loading()) {
+    loadMembers();
+  }
+
+  Future<void> loadMembers() async {
+    state = const AsyncValue.loading();
+    try {
+      final members = await _repository.getPetMembers(_petId);
+      state = AsyncValue.data(members);
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
+  }
+
+  Future<void> addMember({
+    required String email,
+    required String name,
+    PetMemberRole role = PetMemberRole.family,
+  }) async {
+    try {
+      final member = PetMember(
+        id: _uuid.v4(),
+        petId: _petId,
+        userId: _uuid.v4(),
+        role: role,
+        userName: name,
+        userEmail: email,
+        joinedAt: DateTime.now(),
+      );
+      await _repository.addPetMember(member);
+      await loadMembers();
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
+  }
+
+  Future<void> removeMember(String memberId) async {
+    try {
+      await _repository.removePetMember(memberId);
+      await loadMembers();
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
+  }
+
+  Future<void> transferPrimary(String newPrimaryMemberId) async {
+    try {
+      await _repository.transferPrimary(_petId, newPrimaryMemberId);
+      await loadMembers();
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
   }
 }

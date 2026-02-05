@@ -25,6 +25,9 @@ mixin _$PetMember {
   String get petId => throw _privateConstructorUsedError;
   String get userId => throw _privateConstructorUsedError;
   PetMemberRole get role => throw _privateConstructorUsedError;
+  bool get isPrimary => throw _privateConstructorUsedError;
+  String? get userName => throw _privateConstructorUsedError;
+  String? get userEmail => throw _privateConstructorUsedError;
   DateTime get joinedAt => throw _privateConstructorUsedError;
 
   /// Serializes this PetMember to a JSON map.
@@ -47,6 +50,9 @@ abstract class $PetMemberCopyWith<$Res> {
     String petId,
     String userId,
     PetMemberRole role,
+    bool isPrimary,
+    String? userName,
+    String? userEmail,
     DateTime joinedAt,
   });
 }
@@ -70,6 +76,9 @@ class _$PetMemberCopyWithImpl<$Res, $Val extends PetMember>
     Object? petId = null,
     Object? userId = null,
     Object? role = null,
+    Object? isPrimary = null,
+    Object? userName = freezed,
+    Object? userEmail = freezed,
     Object? joinedAt = null,
   }) {
     return _then(
@@ -90,6 +99,18 @@ class _$PetMemberCopyWithImpl<$Res, $Val extends PetMember>
                 ? _value.role
                 : role // ignore: cast_nullable_to_non_nullable
                       as PetMemberRole,
+            isPrimary: null == isPrimary
+                ? _value.isPrimary
+                : isPrimary // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            userName: freezed == userName
+                ? _value.userName
+                : userName // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            userEmail: freezed == userEmail
+                ? _value.userEmail
+                : userEmail // ignore: cast_nullable_to_non_nullable
+                      as String?,
             joinedAt: null == joinedAt
                 ? _value.joinedAt
                 : joinedAt // ignore: cast_nullable_to_non_nullable
@@ -114,6 +135,9 @@ abstract class _$$PetMemberImplCopyWith<$Res>
     String petId,
     String userId,
     PetMemberRole role,
+    bool isPrimary,
+    String? userName,
+    String? userEmail,
     DateTime joinedAt,
   });
 }
@@ -136,6 +160,9 @@ class __$$PetMemberImplCopyWithImpl<$Res>
     Object? petId = null,
     Object? userId = null,
     Object? role = null,
+    Object? isPrimary = null,
+    Object? userName = freezed,
+    Object? userEmail = freezed,
     Object? joinedAt = null,
   }) {
     return _then(
@@ -156,6 +183,18 @@ class __$$PetMemberImplCopyWithImpl<$Res>
             ? _value.role
             : role // ignore: cast_nullable_to_non_nullable
                   as PetMemberRole,
+        isPrimary: null == isPrimary
+            ? _value.isPrimary
+            : isPrimary // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        userName: freezed == userName
+            ? _value.userName
+            : userName // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        userEmail: freezed == userEmail
+            ? _value.userEmail
+            : userEmail // ignore: cast_nullable_to_non_nullable
+                  as String?,
         joinedAt: null == joinedAt
             ? _value.joinedAt
             : joinedAt // ignore: cast_nullable_to_non_nullable
@@ -173,6 +212,9 @@ class _$PetMemberImpl implements _PetMember {
     required this.petId,
     required this.userId,
     this.role = PetMemberRole.owner,
+    this.isPrimary = false,
+    this.userName,
+    this.userEmail,
     required this.joinedAt,
   });
 
@@ -189,11 +231,18 @@ class _$PetMemberImpl implements _PetMember {
   @JsonKey()
   final PetMemberRole role;
   @override
+  @JsonKey()
+  final bool isPrimary;
+  @override
+  final String? userName;
+  @override
+  final String? userEmail;
+  @override
   final DateTime joinedAt;
 
   @override
   String toString() {
-    return 'PetMember(id: $id, petId: $petId, userId: $userId, role: $role, joinedAt: $joinedAt)';
+    return 'PetMember(id: $id, petId: $petId, userId: $userId, role: $role, isPrimary: $isPrimary, userName: $userName, userEmail: $userEmail, joinedAt: $joinedAt)';
   }
 
   @override
@@ -205,14 +254,29 @@ class _$PetMemberImpl implements _PetMember {
             (identical(other.petId, petId) || other.petId == petId) &&
             (identical(other.userId, userId) || other.userId == userId) &&
             (identical(other.role, role) || other.role == role) &&
+            (identical(other.isPrimary, isPrimary) ||
+                other.isPrimary == isPrimary) &&
+            (identical(other.userName, userName) ||
+                other.userName == userName) &&
+            (identical(other.userEmail, userEmail) ||
+                other.userEmail == userEmail) &&
             (identical(other.joinedAt, joinedAt) ||
                 other.joinedAt == joinedAt));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, petId, userId, role, joinedAt);
+  int get hashCode => Object.hash(
+    runtimeType,
+    id,
+    petId,
+    userId,
+    role,
+    isPrimary,
+    userName,
+    userEmail,
+    joinedAt,
+  );
 
   /// Create a copy of PetMember
   /// with the given fields replaced by the non-null parameter values.
@@ -234,6 +298,9 @@ abstract class _PetMember implements PetMember {
     required final String petId,
     required final String userId,
     final PetMemberRole role,
+    final bool isPrimary,
+    final String? userName,
+    final String? userEmail,
     required final DateTime joinedAt,
   }) = _$PetMemberImpl;
 
@@ -248,6 +315,12 @@ abstract class _PetMember implements PetMember {
   String get userId;
   @override
   PetMemberRole get role;
+  @override
+  bool get isPrimary;
+  @override
+  String? get userName;
+  @override
+  String? get userEmail;
   @override
   DateTime get joinedAt;
 

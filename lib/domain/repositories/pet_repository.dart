@@ -12,4 +12,5 @@ abstract class PetRepository {
   Future<PetMember> addPetMember(PetMember member);
   Future<void> removePetMember(String memberId);
   Future<PetMember> updatePetMemberRole(String memberId, PetMemberRole role);
+  Future<void> transferPrimary(String petId, String newPrimaryMemberId);
 }
