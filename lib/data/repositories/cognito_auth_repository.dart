@@ -48,6 +48,7 @@ class CognitoAuthRepository implements AuthRepository {
       final attributes = await amplify.Amplify.Auth.fetchUserAttributes();
       String? email;
       String? sub;
+      String? name;
       bool emailVerified = false;
 
       for (final attr in attributes) {
@@ -61,6 +62,9 @@ class CognitoAuthRepository implements AuthRepository {
           case 'email_verified':
             emailVerified = attr.value.toLowerCase() == 'true';
             break;
+          case 'name':
+            name = attr.value;
+            break;
         }
       }
 
@@ -71,6 +75,7 @@ class CognitoAuthRepository implements AuthRepository {
       return User(
         id: sub,
         email: email,
+        name: name,
         emailVerified: emailVerified,
       );
     } on amplify.AuthException {
@@ -243,6 +248,20 @@ class CognitoAuthRepository implements AuthRepository {
       throw const auth_errors.CodeExpiredException();
     } on cognito.InvalidPasswordException catch (e) {
       throw auth_errors.WeakPasswordException(e.message);
+    } on amplify.AuthException catch (e) {
+      throw auth_errors.UnknownAuthException(e.message);
+    }
+  }
+
+  @override
+  Future<void> updateProfile({String? name}) async {
+    try {
+      if (name != null) {
+        await amplify.Amplify.Auth.updateUserAttribute(
+          userAttributeKey: amplify.AuthUserAttributeKey.name,
+          value: name,
+        );
+      }
     } on amplify.AuthException catch (e) {
       throw auth_errors.UnknownAuthException(e.message);
     }

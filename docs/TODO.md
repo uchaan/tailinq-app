@@ -1,6 +1,6 @@
 # Tailinq App MVP - 전체 작업 목록
 
-> 마지막 업데이트: 2026-02-04
+> 마지막 업데이트: 2026-02-05 (Show Route, Activity, 프로필 편집, 커스텀 마커, 앱 아이콘)
 
 ---
 
@@ -9,13 +9,14 @@
 | 카테고리 | 진행률 | 상태 |
 |---------|--------|------|
 | 프로젝트 기반 | 100% | ✅ 완료 |
-| 인증 시스템 | 80% | 🔄 진행중 |
-| 지도 및 위치 | 70% | 🔄 진행중 |
+| 인증 시스템 | 85% | 🔄 진행중 |
+| 지도 및 위치 | 85% | 🔄 진행중 |
 | 펫 관리 | 90% | 🔄 진행중 |
 | 디바이스 관리 | 50% | 🔄 진행중 |
-| Activity 화면 | 0% | ⬜ 대기 |
+| Activity 화면 | 60% | 🔄 진행중 |
 | 백엔드 연동 | 0% | ⬜ 대기 |
 | 알림 시스템 | 0% | ⬜ 대기 |
+| 테스트 및 품질 | 10% | 🔄 진행중 |
 
 ---
 
@@ -45,6 +46,11 @@
 - [x] 라우터 인증 가드 (Protected Routes)
 - [x] 소셜 로그인 버튼 UI (Google, Apple)
 
+- [x] **프로필 관리**
+  - 프로필 편집 화면 (`/settings/edit-profile`)
+  - 이름 변경 (Cognito `updateUserAttributes`)
+  - 계정 삭제 (Cognito `deleteUser`)
+
 ### ⬜ 추후 작업
 - [ ] **Google 로그인 API 연결**
   - `google_sign_in` 패키지 추가
@@ -56,18 +62,14 @@
   - Apple Developer 설정
   - Cognito Identity Provider 연결
 
-- [ ] **프로필 관리**
-  - 프로필 편집 화면
-  - 이름 변경
-  - 프로필 이미지 업로드 (S3)
-
-- [ ] **계정 관리**
-  - 비밀번호 변경 (로그인 상태에서)
-  - 계정 삭제
+- [ ] **프로필 이미지 업로드**
+  - 프로필 이미지 S3 업로드
+  - 이미지 압축/리사이즈
 
 - [ ] **보안 강화**
   - MFA (Multi-Factor Authentication)
   - 생체 인증 (Face ID / Touch ID)
+  - 비밀번호 변경 (로그인 상태에서)
 
 ---
 
@@ -94,11 +96,21 @@
   - Live Mode와 독립적으로 동작
   - 마커 색상 변경 (시뮬레이션: 오렌지)
   - 수동 카메라 포커스 버튼 (my_location)
+- [x] **커스텀 마커**
+  - 펫 프로필 이미지 마커 (CircleAvatar 기반)
+  - 모드별 테두리 색상 (시뮬레이션: 오렌지, 라이브: 빨강, 기본: 초록)
+  - 이미지 없을 시 종별 이모지 폴백
+- [x] **이동 경로 표시 (Show Route)**
+  - Show Route 토글 (Bottom Sheet 내, 파란색 테마)
+  - 속도 기반 색상 Polyline (Blue/Green/Yellow/Red)
+  - Mock 1시간 산책 히스토리 생성기 (360 포인트, 4단계 시나리오)
+  - 실시간 위치 누적 (Live/Simulation 연동)
+  - 속도 범례 오버레이 (좌상단)
+  - 디바이스 전환 시 경로 자동 초기화/재로드
 
 ### ⬜ 추후 작업
-- [ ] **커스텀 마커**
-  - 펫 프로필 이미지 마커
-  - 마커 클러스터링 (여러 펫 시)
+- [ ] **마커 클러스터링**
+  - 여러 펫/디바이스 동시 표시 시 마커 클러스터링
 
 - [ ] **카메라 컨트롤 개선**
   - 줌 인/아웃 버튼
@@ -108,9 +120,11 @@
   - Safe Zone 경계 이탈 감지
   - 이탈 시 알림 트리거
 
-- [ ] **경로 표시**
-  - 이동 경로 Polyline 표시
-  - 경로 히스토리 재생
+- [ ] **경로 기능 고도화**
+  - 경로 히스토리 재생 (타임라인 슬라이더)
+  - 날짜/시간 범위 필터
+  - 실제 백엔드 위치 데이터 연동 (Mock → API)
+  - 경로 위 탭 시 속도/시간 정보 Tooltip
 
 ---
 
@@ -191,6 +205,16 @@
 
 ### ✅ 완료됨
 - [x] Activity 화면 Placeholder
+- [x] **건강 지표 대시보드**
+  - HealthMetric 모델 (Freezed: activity, rest, eating, drinking)
+  - MockHealthRepository 구현
+  - HealthProvider (선택된 펫 기반 데이터 로드)
+  - 건강 지표 카드 UI (HealthMetricCard + Sparkline 차트)
+  - 펫 전환 지원 (AppBar 펫 스위처)
+- [x] **지표 상세 화면**
+  - MetricDetailScreen (지표별 상세 페이지)
+  - 7일간 일별 라인 차트 (DetailLineChart)
+  - 지표별 아이콘/색상/단위 설정 (MetricConfig)
 
 ### ⬜ 추후 작업
 - [ ] **이동 기록**
@@ -198,15 +222,20 @@
   - 이동 경로 타임라인
   - 날짜별 필터링
 
-- [ ] **활동 통계**
-  - 일/주/월별 활동량 차트
-  - 평균 이동 거리
+- [ ] **활동 통계 고도화**
+  - 주/월별 활동량 차트 (현재 7일만)
+  - 평균 이동 거리 트렌드
   - 활동 시간대 분석
+  - 목표 설정 및 달성률
 
 - [ ] **이벤트 로그**
   - Safe Zone 이탈 기록
   - 배터리 경고 기록
   - 연결 상태 변화 기록
+
+- [ ] **백엔드 연동**
+  - MockHealthRepository → API 교체
+  - 실시간 건강 데이터 수집
 
 ---
 
@@ -271,11 +300,19 @@
 
 ## 9. 테스트 및 품질 (Testing & Quality)
 
+### ✅ 완료됨
+- [x] **단위 테스트**
+  - [x] LocationSimulator 단위 테스트
+  - [x] MockDeviceRepository 단위 테스트
+  - [x] MockDataSource 단위 테스트
+  - [x] SimulationProvider 단위 테스트
+
 ### ⬜ 추후 작업
-- [ ] **단위 테스트**
-  - Repository 테스트
-  - Provider 테스트
-  - Model 테스트
+- [ ] **단위 테스트 추가**
+  - PetRepository 테스트
+  - PetProvider 테스트
+  - AuthProvider 테스트
+  - Model 직렬화 테스트
 
 - [ ] **위젯 테스트**
   - 화면별 위젯 테스트
@@ -298,7 +335,11 @@
 2. ~~펫 프로필 관리~~ ✅
 3. ~~펫 전환 기능~~ ✅
 4. ~~위치 시뮬레이션~~ ✅
-5. Geofencing 구현
+5. ~~커스텀 마커~~ ✅
+6. ~~이동 경로 표시~~ ✅
+7. ~~Activity 건강 지표~~ ✅
+8. ~~프로필 편집~~ ✅
+9. Geofencing 구현
 
 ### Phase 2: 백엔드 연동
 6. API 클라이언트 설정
@@ -315,7 +356,72 @@
 13. 사용자 프로필 관리
 14. 디바이스 설정
 15. 펫 공유 (가족 기능)
-16. 테스트 코드 작성
+16. ~~테스트 코드 작성~~ 🔄 진행중
+
+---
+
+## 최근 완료된 작업 (2026-02-05 #2)
+
+### 이동 경로 표시 (Show Route) 기능
+- Show Route 토글: Bottom Sheet의 Live Tracking 아래에 추가 (파란색 테마)
+- 속도 기반 색상 Polyline: 4단계 (< 0.5 Blue, 0.5–1.5 Green, 1.5–3.0 Yellow, > 3.0 Red)
+- Mock 1시간 산책 히스토리 생성기: 360 포인트, 4단계 시나리오 (대기→산책→달리기→귀가)
+- 실시간 위치 누적: Live/Simulation 중 새 포인트 자동 추가
+- 속도 범례 오버레이: 지도 좌상단
+
+**새로 생성된 파일:**
+- `lib/domain/models/route_point.dart` — RoutePoint 모델 (location + speedMps)
+- `lib/data/services/route_history_generator.dart` — Mock 경로 생성기
+- `lib/presentation/utils/polyline_builder.dart` — 속도 기반 Polyline 배칭 유틸리티
+- `lib/presentation/providers/route_provider.dart` — showRoute, routePoints, routePolylines Provider
+- `lib/presentation/widgets/route_toggle.dart` — Show Route 토글 위젯
+- `lib/presentation/widgets/speed_legend_overlay.dart` — 속도 범례 오버레이
+
+**수정된 파일:**
+- `lib/core/constants/app_constants.dart` — 속도 임계값, 경로 히스토리 설정 추가
+- `lib/presentation/widgets/device_bottom_sheet.dart` — RouteToggle 삽입
+- `lib/presentation/screens/home/home_screen.dart` — Polyline + SpeedLegend 연동
+
+### Activity 건강 지표 대시보드
+- HealthMetric Freezed 모델 (activity, rest, eating, drinking)
+- MockHealthRepository + HealthProvider
+- 건강 지표 카드 (Sparkline 차트 포함)
+- 지표 상세 화면 (7일간 라인 차트)
+
+### 커스텀 마커
+- 펫 이미지/이모지 CircleAvatar 마커
+- 모드별 테두리 색상 (시뮬레이션: 오렌지, 라이브: 빨강, 기본: 초록)
+
+### 프로필 편집 & 계정 관리
+- EditProfileScreen (이름 변경)
+- Cognito updateUserAttributes / deleteUser 연동
+
+### 앱 아이콘 교체
+- Android/iOS/macOS 플랫폼별 새 앱 아이콘 적용
+
+---
+
+## 최근 완료된 작업 (2026-02-05 #1)
+
+### 위치 시뮬레이션 / 라이브 트래킹 아키텍처 수정
+- 순환 참조 제거 (`simulationLocationStreamProvider`)
+- 역할 분리 (시뮬레이션 ↔ 라이브 트래킹)
+- Repository에서 simulator 통합 제거
+- Live Mode가 좌표를 변조하지 않도록 수정
+- 디버그 print 제거
+
+**수정된 파일:**
+- `lib/data/repositories/mock_device_repository.dart` — 좌표 변조 제거, 순수 lastLocation emit
+- `lib/presentation/providers/simulation_provider.dart` — 순환 참조 없는 스트림 구조
+- `lib/presentation/providers/location_provider.dart` — 시뮬레이션/라이브 스트림 분리
+- `lib/presentation/providers/device_provider.dart` — simulator 참조 제거
+- `lib/presentation/screens/home/home_screen.dart` — 마커 색상/위치 우선순위 로직
+
+### Unit Test 작성
+- `test/data/services/location_simulator_test.dart` — 시뮬레이터 핵심 로직 검증
+- `test/data/repositories/mock_device_repository_test.dart` — Repository 동작 검증
+- `test/data/sources/mock_data_source_test.dart` — Mock 데이터 검증
+- `test/presentation/providers/simulation_provider_test.dart` — Provider 상태 관리 검증
 
 ---
 

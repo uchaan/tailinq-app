@@ -29,8 +29,8 @@ class MockDataSource {
         petId: 'pet-2',
         safeZoneRadius: 150.0,
         lastLocation: Location(
-          latitude: AppConstants.defaultLatitude + 0.002,
-          longitude: AppConstants.defaultLongitude + 0.002,
+          latitude: AppConstants.defaultLatitude + 0.0006,
+          longitude: AppConstants.defaultLongitude + 0.0007,
           timestamp: DateTime.now(),
         ),
       ),
@@ -38,8 +38,8 @@ class MockDataSource {
   }
 
   Location generateRandomLocation(Location baseLocation) {
-    final latOffset = (_random.nextDouble() - 0.5) * 0.001;
-    final lngOffset = (_random.nextDouble() - 0.5) * 0.001;
+    final latOffset = (_random.nextDouble() - 0.5) * 0.00005;
+    final lngOffset = (_random.nextDouble() - 0.5) * 0.00005;
 
     return Location(
       latitude: baseLocation.latitude + latOffset,

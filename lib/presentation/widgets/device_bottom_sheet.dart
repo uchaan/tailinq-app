@@ -9,13 +9,21 @@ import '../../data/models/pet.dart';
 import '../providers/device_provider.dart';
 import '../providers/pet_provider.dart';
 import 'blinking_live_badge.dart';
+import 'route_toggle.dart';
 import 'simulation_control_panel.dart';
 
-class DeviceBottomSheet extends ConsumerWidget {
+class DeviceBottomSheet extends ConsumerStatefulWidget {
   final Device device;
   final Pet? pet;
 
   const DeviceBottomSheet({super.key, required this.device, this.pet});
+
+  @override
+  ConsumerState<DeviceBottomSheet> createState() => _DeviceBottomSheetState();
+}
+
+class _DeviceBottomSheetState extends ConsumerState<DeviceBottomSheet> {
+  double _dragDelta = 0;
 
   String _getSpeciesEmoji(PetSpecies species) {
     switch (species) {
@@ -74,6 +82,7 @@ class DeviceBottomSheet extends ConsumerWidget {
 
   void _showPetSwitcher(BuildContext context, WidgetRef ref) {
     final petsState = ref.read(petNotifierProvider);
+    final currentPetId = ref.read(selectedPetIdProvider);
 
     petsState.whenData((pets) {
       if (pets.isEmpty) return;
@@ -85,21 +94,23 @@ class DeviceBottomSheet extends ConsumerWidget {
         ),
         builder: (context) => _PetSwitcherSheet(
           pets: pets,
-          currentPetId: pet?.id,
+          currentPetId: currentPetId,
         ),
       );
     });
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final isLiveMode = ref.watch(isLiveModeProvider);
+    final isExpanded = ref.watch(bottomSheetExpandedProvider);
+    // Watch pet provider directly to ensure photo updates are reflected immediately
+    final currentPet = ref.watch(selectedPetProvider).valueOrNull ?? widget.pet;
 
     return Container(
-      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withAlpha(25),
@@ -108,138 +119,178 @@ class DeviceBottomSheet extends ConsumerWidget {
           ),
         ],
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 40,
-            height: 4,
-            margin: const EdgeInsets.only(bottom: 16),
-            decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
-          InkWell(
-            onTap: () => _showPetSwitcher(context, ref),
-            borderRadius: BorderRadius.circular(12),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4),
-              child: Row(
-                children: [
-                  _buildPetAvatar(pet),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              pet?.name ?? 'Unknown',
-                              style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(width: 4),
-                            Icon(
-                              Icons.swap_horiz,
-                              size: 18,
-                              color: Colors.grey[500],
-                            ),
-                            const SizedBox(width: 8),
-                            if (isLiveMode) const BlinkingLiveBadge(),
-                          ],
-                        ),
-                        const SizedBox(height: 4),
-                        Row(
-                          children: [
-                            Icon(
-                              _getBatteryIcon(device.batteryLevel),
-                              size: 16,
-                              color: _getBatteryColor(device.batteryLevel),
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              '${device.batteryLevel}%',
-                              style: TextStyle(
-                                color: _getBatteryColor(device.batteryLevel),
-                                fontSize: 14,
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-                            Container(
-                              width: 8,
-                              height: 8,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: _getStatusColor(device.status),
-                              ),
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              _getStatusText(device.status),
-                              style: TextStyle(
-                                color: _getStatusColor(device.status),
-                                fontSize: 14,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+      child: AnimatedSize(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+        alignment: Alignment.topCenter,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Drag handle
+              GestureDetector(
+                onVerticalDragUpdate: (details) {
+                  _dragDelta += details.delta.dy;
+                },
+                onVerticalDragEnd: (details) {
+                  if (_dragDelta > 50) {
+                    ref.read(bottomSheetExpandedProvider.notifier).state = false;
+                  } else if (_dragDelta < -50) {
+                    ref.read(bottomSheetExpandedProvider.notifier).state = true;
+                  }
+                  _dragDelta = 0;
+                },
+                child: Container(
+                  color: Colors.transparent,
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  width: double.infinity,
+                  child: Center(
+                    child: Container(
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(2),
+                      ),
                     ),
                   ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
-          const Divider(),
-          const SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                'Live Tracking',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
                 ),
               ),
-              Switch(
-                value: isLiveMode,
-                onChanged: (value) {
-                  ref.read(isLiveModeProvider.notifier).toggle();
-                },
-                activeTrackColor: Colors.green[200],
-                thumbColor: WidgetStateProperty.resolveWith<Color?>(
-                  (states) {
-                    if (states.contains(WidgetState.selected)) {
-                      return Colors.green;
-                    }
-                    return null;
-                  },
+              // Pet info row (always visible)
+              InkWell(
+                onTap: () => _showPetSwitcher(context, ref),
+                borderRadius: BorderRadius.circular(12),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Row(
+                    children: [
+                      _buildPetAvatar(currentPet),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  currentPet?.name ?? 'Unknown',
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(width: 4),
+                                Icon(
+                                  Icons.swap_horiz,
+                                  size: 18,
+                                  color: Colors.grey[500],
+                                ),
+                                const SizedBox(width: 8),
+                                if (isLiveMode) const BlinkingLiveBadge(),
+                              ],
+                            ),
+                            const SizedBox(height: 4),
+                            Row(
+                              children: [
+                                Icon(
+                                  _getBatteryIcon(widget.device.batteryLevel),
+                                  size: 16,
+                                  color: _getBatteryColor(widget.device.batteryLevel),
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  '${widget.device.batteryLevel}%',
+                                  style: TextStyle(
+                                    color: _getBatteryColor(widget.device.batteryLevel),
+                                    fontSize: 14,
+                                  ),
+                                ),
+                                const SizedBox(width: 16),
+                                Container(
+                                  width: 8,
+                                  height: 8,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: _getStatusColor(widget.device.status),
+                                  ),
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  _getStatusText(widget.device.status),
+                                  style: TextStyle(
+                                    color: _getStatusColor(widget.device.status),
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
+              // Expandable content
+              if (isExpanded) ...[
+                const SizedBox(height: 16),
+                const Divider(),
+                const SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.gps_fixed, size: 18, color: Colors.green[700]),
+                        const SizedBox(width: 8),
+                        const Text(
+                          'Live Tracking',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        if (isLiveMode && widget.device.lastLocation != null) ...[
+                          const SizedBox(width: 8),
+                          Text(
+                            _formatTimestamp(widget.device.lastLocation!.timestamp),
+                            style: TextStyle(
+                              color: Colors.grey[500],
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                    Switch(
+                      value: isLiveMode,
+                      onChanged: (value) {
+                        ref.read(isLiveModeProvider.notifier).toggle();
+                      },
+                      activeTrackColor: Colors.green[200],
+                      thumbColor: WidgetStateProperty.resolveWith<Color?>(
+                        (states) {
+                          if (states.contains(WidgetState.selected)) {
+                            return Colors.green;
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                const RouteToggle(),
+                const SizedBox(height: 8),
+                const Divider(),
+                const SizedBox(height: 8),
+                const SimulationControlPanel(),
+                const SizedBox(height: 16),
+              ],
             ],
           ),
-          if (device.lastLocation != null) ...[
-            const SizedBox(height: 8),
-            Text(
-              'Last update: ${_formatTimestamp(device.lastLocation!.timestamp)}',
-              style: TextStyle(
-                color: Colors.grey[600],
-                fontSize: 12,
-              ),
-            ),
-          ],
-          const SizedBox(height: 16),
-          const Divider(),
-          const SizedBox(height: 8),
-          const SimulationControlPanel(),
-          const SizedBox(height: 16),
-        ],
+        ),
       ),
     );
   }

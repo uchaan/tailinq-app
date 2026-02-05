@@ -40,15 +40,15 @@ class _BlinkingLiveBadgeState extends State<BlinkingLiveBadge>
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           decoration: BoxDecoration(
             color: Color.lerp(
-              Colors.orange,
-              Colors.red,
+              Colors.green.shade300,
+              Colors.green,
               _animation.value,
             )?.withAlpha(((0.2 + _animation.value * 0.8) * 255).round()),
             borderRadius: BorderRadius.circular(4),
             border: Border.all(
               color: Color.lerp(
-                Colors.orange,
-                Colors.red,
+                Colors.green.shade300,
+                Colors.green,
                 _animation.value,
               )!,
               width: 1,
@@ -63,8 +63,8 @@ class _BlinkingLiveBadgeState extends State<BlinkingLiveBadge>
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: Color.lerp(
-                    Colors.orange,
-                    Colors.red,
+                    Colors.green.shade300,
+                    Colors.green,
                     _animation.value,
                   ),
                 ),
@@ -74,8 +74,8 @@ class _BlinkingLiveBadgeState extends State<BlinkingLiveBadge>
                 'LIVE',
                 style: TextStyle(
                   color: Color.lerp(
-                    Colors.orange,
-                    Colors.red,
+                    Colors.green.shade300,
+                    Colors.green,
                     _animation.value,
                   ),
                   fontWeight: FontWeight.bold,

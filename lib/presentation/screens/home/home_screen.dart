@@ -7,9 +7,12 @@ import '../../../data/models/location.dart';
 import '../../../data/models/pet.dart';
 import '../../providers/device_provider.dart';
 import '../../providers/location_provider.dart';
+import '../../providers/marker_icon_provider.dart';
 import '../../providers/pet_provider.dart';
+import '../../providers/route_provider.dart';
 import '../../providers/simulation_provider.dart';
 import '../../widgets/device_bottom_sheet.dart';
+import '../../widgets/speed_legend_overlay.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -56,9 +59,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final simulationState = ref.watch(simulationProvider);
 
     // 시뮬레이션 위치도 watch (마커 업데이트용)
-    final simulationLocation = simulationState.isEnabled && simulationState.isRunning
-        ? ref.watch(simulationLocationStreamProvider).valueOrNull
-        : null;
+    final simulationLocationAsync = ref.watch(simulationLocationStreamProvider);
+
+    // 경로 polylines
+    final routePolylines = ref.watch(routePolylinesProvider);
+
+    // 커스텀 마커 아이콘
+    final markerIconAsync = ref.watch(petMarkerIconProvider);
 
     // 초기 포커스 설정 (한 번만)
     if (!_hasInitiallyFocused) {
@@ -74,30 +81,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(AppConstants.appName),
+        toolbarHeight: 40,
         actions: [
-          // 현재 위치로 포커스 버튼
           IconButton(
-            icon: const Icon(Icons.my_location),
-            onPressed: () {
-              // 현재 마커 위치로 카메라 이동
-              Location? currentLocation;
-              if (simulationState.isEnabled && simulationState.isRunning) {
-                currentLocation = simulationLocation;
-              } else if (isLiveMode) {
-                currentLocation = locationAsync.valueOrNull;
-              }
-              currentLocation ??= selectedDeviceAsync.valueOrNull?.lastLocation;
-
-              if (currentLocation != null) {
-                _focusOnLocation(currentLocation);
-              }
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.notifications_outlined),
+            icon: const Icon(Icons.notifications_outlined, size: 22),
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(),
             onPressed: () {},
           ),
+          const SizedBox(width: 12),
         ],
       ),
       body: Stack(
@@ -109,14 +101,53 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             locationAsync,
             isLiveMode,
             simulationState,
-            simulationLocation,
+            simulationLocationAsync,
+            routePolylines,
+            markerIconAsync,
+          ),
+
+          // Speed legend overlay (top-left)
+          const Positioned(
+            top: 16,
+            left: 16,
+            child: SpeedLegendOverlay(),
+          ),
+
+          // 포커스 버튼 (지도 위 오버레이)
+          Positioned(
+            top: 16,
+            right: 16,
+            child: FloatingActionButton.small(
+              heroTag: 'focusButton',
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.black87,
+              onPressed: () {
+                // 현재 마커 위치로 카메라 이동
+                Location? currentLocation;
+                // 1순위: 시뮬레이션
+                if (simulationState.isEnabled && simulationState.isRunning) {
+                  currentLocation = simulationLocationAsync.valueOrNull;
+                }
+                // 2순위: 라이브 트래킹
+                if (currentLocation == null && isLiveMode) {
+                  currentLocation = locationAsync.valueOrNull;
+                }
+                // 3순위: 마지막 위치
+                currentLocation ??= selectedDeviceAsync.valueOrNull?.lastLocation;
+
+                if (currentLocation != null) {
+                  _focusOnLocation(currentLocation);
+                }
+              },
+              child: const Icon(Icons.my_location),
+            ),
           ),
 
           // Bottom sheet
           Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
+            left: 16,
+            right: 16,
+            bottom: 16,
             child: selectedDeviceAsync.when(
               data: (device) {
                 if (device == null) {
@@ -140,7 +171,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     AsyncValue<Location?> locationAsync,
     bool isLiveMode,
     SimulationState simulationState,
-    Location? simulationLocation,
+    AsyncValue<Location?> simulationLocationAsync,
+    Set<Polyline> routePolylines,
+    AsyncValue<BitmapDescriptor> markerIconAsync,
   ) {
     // Build markers
     final markers = <Marker>{};
@@ -151,15 +184,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
       Location? markerLocation;
 
-      // 우선순위: 시뮬레이션 > 라이브 스트림 > 마지막 위치
-      if (simulationState.isEnabled && simulationState.isRunning && simulationLocation != null) {
-        markerLocation = simulationLocation;
-      } else if (isLiveMode) {
-        locationAsync.whenData((loc) {
-          markerLocation = loc;
-        });
+      // 1순위: 시뮬레이션
+      if (simulationState.isEnabled && simulationState.isRunning) {
+        markerLocation = simulationLocationAsync.valueOrNull;
       }
-
+      // 2순위: 라이브 트래킹
+      if (markerLocation == null && isLiveMode) {
+        markerLocation = locationAsync.valueOrNull;
+      }
+      // 3순위: 마지막 위치
       markerLocation ??= device.lastLocation;
 
       if (markerLocation != null) {
@@ -168,18 +201,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         markers.add(
           Marker(
             markerId: MarkerId(device.id),
-            position: LatLng(markerLocation!.latitude, markerLocation!.longitude),
+            position: LatLng(markerLocation.latitude, markerLocation.longitude),
             infoWindow: InfoWindow(
               title: petName,
               snippet: isSimulating
                   ? 'Simulating: ${simulationState.scenario.label}'
                   : (isLiveMode ? 'Live Tracking' : 'Last known location'),
             ),
-            icon: BitmapDescriptor.defaultMarkerWithHue(
-              isSimulating
-                  ? BitmapDescriptor.hueOrange
-                  : (isLiveMode ? BitmapDescriptor.hueRed : BitmapDescriptor.hueGreen),
-            ),
+            icon: markerIconAsync.valueOrNull ??
+                BitmapDescriptor.defaultMarkerWithHue(
+                  isSimulating
+                      ? BitmapDescriptor.hueOrange
+                      : (isLiveMode ? BitmapDescriptor.hueRed : BitmapDescriptor.hueGreen),
+                ),
           ),
         );
       }
@@ -189,6 +223,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       onMapCreated: _onMapCreated,
       initialCameraPosition: _initialPosition,
       markers: markers,
+      polylines: routePolylines,
       myLocationEnabled: false,
       myLocationButtonEnabled: false,
       zoomControlsEnabled: true,

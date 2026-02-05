@@ -87,6 +87,9 @@ abstract class AuthRepository {
     required String newPassword,
   });
 
+  /// Update user profile attributes
+  Future<void> updateProfile({String? name});
+
   // Social sign-in methods (to be implemented later)
   // Future<User> signInWithGoogle();
   // Future<User> signInWithApple();

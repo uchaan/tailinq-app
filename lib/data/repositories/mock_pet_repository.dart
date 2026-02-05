@@ -6,11 +6,16 @@ class MockPetRepository implements PetRepository {
   final Map<String, Pet> _pets = {};
   final Map<String, PetMember> _members = {};
 
-  MockPetRepository() {
-    _initMockData();
+  MockPetRepository({
+    String currentUserId = 'user-1',
+    String currentUserName = 'Me',
+    String currentUserEmail = 'me@example.com',
+  }) {
+    _initMockData(currentUserId, currentUserName, currentUserEmail);
   }
 
-  void _initMockData() {
+  void _initMockData(
+      String currentUserId, String currentUserName, String currentUserEmail) {
     // Mock pets
     final pets = [
       Pet(
@@ -42,11 +47,11 @@ class MockPetRepository implements PetRepository {
       PetMember(
         id: 'member-1',
         petId: 'pet-1',
-        userId: 'user-1',
+        userId: currentUserId,
         role: PetMemberRole.owner,
         isPrimary: true,
-        userName: 'John Park',
-        userEmail: 'john@example.com',
+        userName: currentUserName,
+        userEmail: currentUserEmail,
         joinedAt: DateTime(2020, 3, 15),
       ),
       PetMember(
@@ -72,11 +77,11 @@ class MockPetRepository implements PetRepository {
       PetMember(
         id: 'member-2',
         petId: 'pet-2',
-        userId: 'user-1',
+        userId: currentUserId,
         role: PetMemberRole.owner,
         isPrimary: true,
-        userName: 'John Park',
-        userEmail: 'john@example.com',
+        userName: currentUserName,
+        userEmail: currentUserEmail,
         joinedAt: DateTime(2021, 7, 22),
       ),
       PetMember(

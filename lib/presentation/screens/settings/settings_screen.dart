@@ -14,7 +14,12 @@ class SettingsScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Settings'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.notifications_outlined),
+            onPressed: () {},
+          ),
+        ],
       ),
       body: ListView(
         children: [
@@ -29,9 +34,11 @@ class SettingsScreen extends ConsumerWidget {
                     radius: 30,
                     backgroundColor: Theme.of(context).primaryColor,
                     child: Text(
-                      user.email.isNotEmpty
-                          ? user.email[0].toUpperCase()
-                          : '?',
+                      (user.name != null && user.name!.isNotEmpty)
+                          ? user.name![0].toUpperCase()
+                          : (user.email.isNotEmpty
+                              ? user.email[0].toUpperCase()
+                              : '?'),
                       style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -102,11 +109,7 @@ class SettingsScreen extends ConsumerWidget {
                 icon: Icons.person_outline,
                 title: 'Edit Profile',
                 subtitle: 'Update your name and photo',
-                onTap: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Coming soon')),
-                  );
-                },
+                onTap: () => context.push('/settings/edit-profile'),
               ),
               _SettingsTile(
                 icon: Icons.lock_outline,

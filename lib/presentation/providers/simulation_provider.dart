@@ -9,26 +9,22 @@ class SimulationState {
   final bool isEnabled;
   final bool isRunning;
   final SimulationScenario scenario;
-  final Location? currentLocation;
 
   const SimulationState({
     this.isEnabled = false,
     this.isRunning = false,
     this.scenario = SimulationScenario.idle,
-    this.currentLocation,
   });
 
   SimulationState copyWith({
     bool? isEnabled,
     bool? isRunning,
     SimulationScenario? scenario,
-    Location? currentLocation,
   }) {
     return SimulationState(
       isEnabled: isEnabled ?? this.isEnabled,
       isRunning: isRunning ?? this.isRunning,
       scenario: scenario ?? this.scenario,
-      currentLocation: currentLocation ?? this.currentLocation,
     );
   }
 }
@@ -90,11 +86,6 @@ class SimulationNotifier extends StateNotifier<SimulationState> {
     simulator.setHomeLocation(location);
   }
 
-  /// 현재 위치 업데이트 (내부 호출용)
-  void updateCurrentLocation(Location location) {
-    state = state.copyWith(currentLocation: location);
-  }
-
   @override
   void dispose() {
     _simulator?.dispose();
@@ -119,9 +110,6 @@ final simulationLocationStreamProvider = StreamProvider<Location?>((ref) {
     return Stream.value(null);
   }
 
-  return notifier.simulator.locationStream.map((location) {
-    // 상태 업데이트
-    notifier.updateCurrentLocation(location);
-    return location;
-  });
+  // 순환 참조 없이 직접 스트림 반환
+  return notifier.simulator.locationStream;
 });

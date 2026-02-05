@@ -27,13 +27,8 @@ class SpeciesSelector extends StatelessWidget {
           icon: Icon(Icons.pets),
         ),
         ButtonSegment(
-          value: PetSpecies.bird,
-          label: Text('Bird'),
-          icon: Icon(Icons.flutter_dash),
-        ),
-        ButtonSegment(
-          value: PetSpecies.rabbit,
-          label: Text('Rabbit'),
+          value: PetSpecies.other,
+          label: Text('Other'),
           icon: Icon(Icons.cruelty_free),
         ),
       ],

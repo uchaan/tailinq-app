@@ -10,7 +10,10 @@ import '../screens/auth/reset_password_screen.dart';
 import '../screens/auth/sign_in_screen.dart';
 import '../screens/auth/sign_up_screen.dart';
 import '../screens/home/home_screen.dart';
+import '../../data/models/health_metric.dart';
 import '../screens/activity/activity_screen.dart';
+import '../screens/activity/metric_detail_screen.dart';
+import '../screens/settings/edit_profile_screen.dart';
 import '../screens/settings/settings_screen.dart';
 import '../screens/pet/pet_list_screen.dart';
 import '../screens/pet/pet_add_screen.dart';
@@ -104,10 +107,27 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/activity',
             builder: (context, state) => const ActivityScreen(),
+            routes: [
+              GoRoute(
+                path: ':metricType',
+                builder: (context, state) {
+                  final typeName = state.pathParameters['metricType']!;
+                  final type = HealthMetricType.values.asNameMap()[typeName] ??
+                      HealthMetricType.activity;
+                  return MetricDetailScreen(metricType: type);
+                },
+              ),
+            ],
           ),
           GoRoute(
             path: '/settings',
             builder: (context, state) => const SettingsScreen(),
+            routes: [
+              GoRoute(
+                path: 'edit-profile',
+                builder: (context, state) => const EditProfileScreen(),
+              ),
+            ],
           ),
           GoRoute(
             path: '/pets',

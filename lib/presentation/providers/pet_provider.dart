@@ -8,10 +8,16 @@ import '../../data/models/pet_member.dart';
 import '../../data/repositories/mock_pet_repository.dart';
 import '../../domain/repositories/pet_repository.dart';
 import '../../domain/repositories/storage_repository.dart';
+import 'auth_provider.dart';
 import 'storage_provider.dart';
 
 final petRepositoryProvider = Provider<MockPetRepository>((ref) {
-  return MockPetRepository();
+  final user = ref.watch(currentUserProvider);
+  return MockPetRepository(
+    currentUserId: user?.id ?? 'user-1',
+    currentUserName: user?.name ?? user?.email ?? 'Me',
+    currentUserEmail: user?.email ?? 'me@example.com',
+  );
 });
 
 final petsProvider = FutureProvider<List<Pet>>((ref) async {
@@ -21,11 +27,14 @@ final petsProvider = FutureProvider<List<Pet>>((ref) async {
 
 final selectedPetIdProvider = StateProvider<String?>((ref) => 'pet-1');
 
-final selectedPetProvider = FutureProvider<Pet?>((ref) async {
+final selectedPetProvider = Provider<AsyncValue<Pet?>>((ref) {
   final petId = ref.watch(selectedPetIdProvider);
-  if (petId == null) return null;
-  final repository = ref.watch(petRepositoryProvider);
-  return repository.getPet(petId);
+  if (petId == null) return const AsyncValue.data(null);
+
+  final petsState = ref.watch(petNotifierProvider);
+  return petsState.whenData(
+    (pets) => pets.where((p) => p.id == petId).firstOrNull,
+  );
 });
 
 final petMembersProvider =
@@ -52,7 +61,6 @@ class PetNotifier extends StateNotifier<AsyncValue<List<Pet>>> {
   }
 
   Future<void> loadPets() async {
-    state = const AsyncValue.loading();
     try {
       final pets = await _repository.getPets();
       state = AsyncValue.data(pets);

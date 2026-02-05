@@ -224,6 +224,17 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
+  Future<void> updateProfile({String? name}) async {
+    state = state.copyWith(isLoading: true, clearError: true);
+    try {
+      await _repository.updateProfile(name: name);
+      await checkAuthStatus();
+    } on AuthException catch (e) {
+      state = state.copyWith(error: e.message, isLoading: false);
+      rethrow;
+    }
+  }
+
   void clearError() {
     state = state.copyWith(clearError: true);
   }
