@@ -15,6 +15,9 @@ import '../screens/activity/activity_screen.dart';
 import '../screens/activity/metric_detail_screen.dart';
 import '../screens/settings/edit_profile_screen.dart';
 import '../screens/settings/settings_screen.dart';
+import '../screens/geofence/geofence_draw_screen.dart';
+import '../screens/geofence/geofence_list_screen.dart';
+import '../screens/geofence/geofence_saved_screen.dart';
 import '../screens/pet/pet_list_screen.dart';
 import '../screens/pet/pet_add_screen.dart';
 import '../screens/pet/pet_detail_screen.dart';
@@ -103,6 +106,24 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/home',
             builder: (context, state) => const HomeScreen(),
+            routes: [
+              GoRoute(
+                path: 'geofences',
+                builder: (context, state) => const GeofenceListScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'draw',
+                    builder: (context, state) =>
+                        const GeofenceDrawScreen(),
+                  ),
+                  GoRoute(
+                    path: 'saved',
+                    builder: (context, state) =>
+                        const GeofenceSavedScreen(),
+                  ),
+                ],
+              ),
+            ],
           ),
           GoRoute(
             path: '/activity',

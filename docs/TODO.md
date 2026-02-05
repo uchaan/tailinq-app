@@ -1,6 +1,6 @@
 # Tailinq App MVP - 전체 작업 목록
 
-> 마지막 업데이트: 2026-02-05 (Show Route, Activity, 프로필 편집, 커스텀 마커, 앱 아이콘)
+> 마지막 업데이트: 2026-02-06 (Geofence 설정 및 관리)
 
 ---
 
@@ -10,7 +10,7 @@
 |---------|--------|------|
 | 프로젝트 기반 | 100% | ✅ 완료 |
 | 인증 시스템 | 85% | 🔄 진행중 |
-| 지도 및 위치 | 85% | 🔄 진행중 |
+| 지도 및 위치 | 90% | 🔄 진행중 |
 | 펫 관리 | 90% | 🔄 진행중 |
 | 디바이스 관리 | 50% | 🔄 진행중 |
 | Activity 화면 | 60% | 🔄 진행중 |
@@ -115,8 +115,16 @@
 - [ ] **카메라 컨트롤 개선**
   - 줌 인/아웃 버튼
 
-- [ ] **Geofencing (Safe Zone)**
-  - Safe Zone 원형 영역 표시
+- [x] **Geofencing (Safe Zone)**
+  - Geofence 모델 (글로벌 엔티티) + PetGeofence 다대다 연결 모델
+  - GeofenceRepository 인터페이스 + Mock 구현
+  - 지도 위 Geofence Circle 표시 (반투명 fill + stroke)
+  - Show Geofences 토글 (초록색 테마)
+  - Manage Geofences 화면 (펫별 할당 목록)
+  - Draw on Map 화면 (지도 탭 → 중심점, 반경 슬라이더, 색상 선택)
+  - Add from Saved 화면 (미할당 geofence 추가)
+  - 펫별 geofence 할당/제거
+- [ ] **Geofencing 고도화**
   - Safe Zone 경계 이탈 감지
   - 이탈 시 알림 트리거
 
@@ -339,7 +347,7 @@
 6. ~~이동 경로 표시~~ ✅
 7. ~~Activity 건강 지표~~ ✅
 8. ~~프로필 편집~~ ✅
-9. Geofencing 구현
+9. ~~Geofencing 구현~~ ✅
 
 ### Phase 2: 백엔드 연동
 6. API 클라이언트 설정
@@ -357,6 +365,37 @@
 14. 디바이스 설정
 15. 펫 공유 (가족 기능)
 16. ~~테스트 코드 작성~~ 🔄 진행중
+
+---
+
+## 최근 완료된 작업 (2026-02-06)
+
+### Geofence 설정 및 관리 기능
+- Geofence 모델 (Freezed) + PetGeofence 다대다 연결 모델
+- GeofenceRepository 인터페이스 + MockGeofenceRepository 구현
+- Geofence Provider (토글, 펫별 목록, Circle 오버레이, 미할당 목록)
+- 지도 위 Geofence Circle 표시 (Show Geofences 토글)
+- Manage Geofences 화면 (펫별 할당 목록 + FAB)
+- Draw on Map 화면 (지도 탭 중심점, 반경 슬라이더 25–1000m, 8색 선택)
+- Add from Saved 화면 (미할당 geofence 추가)
+
+**새로 생성된 파일:**
+- `lib/data/models/geofence.dart` — Geofence Freezed 모델
+- `lib/data/models/pet_geofence.dart` — PetGeofence 다대다 Freezed 모델
+- `lib/domain/repositories/geofence_repository.dart` — Repository 인터페이스
+- `lib/data/repositories/mock_geofence_repository.dart` — Mock 구현
+- `lib/presentation/providers/geofence_provider.dart` — 전체 Provider 구조
+- `lib/presentation/widgets/geofence/geofence_list_item.dart` — 재사용 위젯
+- `lib/presentation/widgets/geofence/geofence_toggle.dart` — 토글 + 네비게이션 버튼
+- `lib/presentation/screens/geofence/geofence_list_screen.dart` — 펫별 geofence 목록
+- `lib/presentation/screens/geofence/geofence_draw_screen.dart` — 지도 위 그리기
+- `lib/presentation/screens/geofence/geofence_saved_screen.dart` — 기존 geofence 추가
+
+**수정된 파일:**
+- `lib/core/constants/app_constants.dart` — Geofence 반경/색상 상수 추가
+- `lib/presentation/screens/home/home_screen.dart` — Circle 표시 연동
+- `lib/presentation/widgets/device_bottom_sheet.dart` — GeofenceToggle 삽입
+- `lib/presentation/router/app_router.dart` — Geofence 라우트 등록
 
 ---
 

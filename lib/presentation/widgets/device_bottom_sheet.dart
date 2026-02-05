@@ -9,6 +9,7 @@ import '../../data/models/pet.dart';
 import '../providers/device_provider.dart';
 import '../providers/pet_provider.dart';
 import 'blinking_live_badge.dart';
+import 'geofence/geofence_toggle.dart';
 import 'route_toggle.dart';
 import 'simulation_control_panel.dart';
 
@@ -282,6 +283,8 @@ class _DeviceBottomSheetState extends ConsumerState<DeviceBottomSheet> {
                 ),
                 const SizedBox(height: 8),
                 const RouteToggle(),
+                const SizedBox(height: 8),
+                const GeofenceToggle(),
                 const SizedBox(height: 8),
                 const Divider(),
                 const SizedBox(height: 8),

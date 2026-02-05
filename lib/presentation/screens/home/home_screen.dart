@@ -6,6 +6,7 @@ import '../../../core/constants/app_constants.dart';
 import '../../../data/models/location.dart';
 import '../../../data/models/pet.dart';
 import '../../providers/device_provider.dart';
+import '../../providers/geofence_provider.dart';
 import '../../providers/location_provider.dart';
 import '../../providers/marker_icon_provider.dart';
 import '../../providers/pet_provider.dart';
@@ -67,6 +68,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     // 커스텀 마커 아이콘
     final markerIconAsync = ref.watch(petMarkerIconProvider);
 
+    // Geofence circles
+    final geofenceCircles = ref.watch(geofenceCirclesProvider);
+
     // 초기 포커스 설정 (한 번만)
     if (!_hasInitiallyFocused) {
       selectedDeviceAsync.whenData((device) {
@@ -104,6 +108,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             simulationLocationAsync,
             routePolylines,
             markerIconAsync,
+            geofenceCircles,
           ),
 
           // Speed legend overlay (top-left)
@@ -174,6 +179,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     AsyncValue<Location?> simulationLocationAsync,
     Set<Polyline> routePolylines,
     AsyncValue<BitmapDescriptor> markerIconAsync,
+    Set<Circle> geofenceCircles,
   ) {
     // Build markers
     final markers = <Marker>{};
@@ -224,6 +230,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       initialCameraPosition: _initialPosition,
       markers: markers,
       polylines: routePolylines,
+      circles: geofenceCircles,
       myLocationEnabled: false,
       myLocationButtonEnabled: false,
       zoomControlsEnabled: true,
