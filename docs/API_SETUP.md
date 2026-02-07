@@ -1,33 +1,33 @@
-# API 설정 가이드
+# API Setup Guide
 
-> 이 문서는 Tailinq App에서 사용하는 외부 API 설정 방법을 설명합니다.
-> 계정 변경 시 이 문서를 참고하여 설정하세요.
+> This document explains how to set up the external APIs used in the Tailinq App.
+> Refer to this document when changing accounts.
 
 ---
 
 ## 1. Google Maps API
 
-### 1.1 API 키 발급
+### 1.1 Obtaining an API Key
 
-1. [Google Cloud Console](https://console.cloud.google.com/) 접속
-2. 프로젝트 생성 또는 선택
-3. **APIs & Services > Credentials** 메뉴 이동
-4. **Create Credentials > API Key** 클릭
-5. 생성된 API 키 복사
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Create or select a project
+3. Navigate to **APIs & Services > Credentials**
+4. Click **Create Credentials > API Key**
+5. Copy the generated API key
 
-### 1.2 필수 API 활성화
+### 1.2 Required API Activation
 
-**APIs & Services > Library**에서 다음 API들을 활성화해야 합니다:
+The following APIs must be enabled under **APIs & Services > Library**:
 
-| API 이름 | 용도 | 필수 |
+| API Name | Purpose | Required |
 |---------|------|------|
-| **Maps JavaScript API** | 웹에서 Google Maps 표시 | ✅ |
-| **Maps SDK for Android** | Android 앱에서 Google Maps 표시 | ✅ |
-| **Maps SDK for iOS** | iOS 앱에서 Google Maps 표시 | ✅ |
+| **Maps JavaScript API** | Display Google Maps on web | ✅ |
+| **Maps SDK for Android** | Display Google Maps in Android app | ✅ |
+| **Maps SDK for iOS** | Display Google Maps in iOS app | ✅ |
 
-### 1.3 API 키 적용 위치
+### 1.3 API Key Application Locations
 
-API 키를 다음 파일들에 적용합니다:
+Apply the API key to the following files:
 
 #### Android
 ```xml
@@ -49,50 +49,50 @@ GMSServices.provideAPIKey("YOUR_API_KEY")
 <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
 ```
 
-### 1.4 흔한 에러 및 해결
+### 1.4 Common Errors and Solutions
 
-| 에러 | 원인 | 해결 |
+| Error | Cause | Solution |
 |------|------|------|
-| `ApiNotActivatedMapError` | Maps JavaScript API가 비활성화됨 | Google Cloud Console에서 Maps JavaScript API 활성화 |
-| `InvalidKeyMapError` | API 키가 잘못됨 | API 키 확인 및 재발급 |
-| `RefererNotAllowedMapError` | 도메인이 허용되지 않음 | API 키 제한 설정에서 도메인 추가 |
+| `ApiNotActivatedMapError` | Maps JavaScript API is disabled | Enable Maps JavaScript API in Google Cloud Console |
+| `InvalidKeyMapError` | API key is invalid | Verify API key and reissue if needed |
+| `RefererNotAllowedMapError` | Domain is not allowed | Add domain in API key restriction settings |
 
-### 1.5 API 키 제한 설정 (권장)
+### 1.5 API Key Restriction Settings (Recommended)
 
-보안을 위해 API 키에 제한을 설정하세요:
+For security, set restrictions on your API key:
 
 1. **Application restrictions**
-   - Android: 패키지명 + SHA-1 지문
-   - iOS: 번들 ID
-   - Web: HTTP 리퍼러 (예: `localhost/*`, `*.yourdomain.com/*`)
+   - Android: Package name + SHA-1 fingerprint
+   - iOS: Bundle ID
+   - Web: HTTP referrers (e.g., `localhost/*`, `*.yourdomain.com/*`)
 
 2. **API restrictions**
-   - 사용할 API만 선택 (Maps JavaScript API, Maps SDK for Android, Maps SDK for iOS)
+   - Select only the APIs you use (Maps JavaScript API, Maps SDK for Android, Maps SDK for iOS)
 
 ---
 
 ## 2. AWS Cognito
 
-### 2.1 User Pool 생성
+### 2.1 Creating a User Pool
 
-1. [AWS Console](https://console.aws.amazon.com/) > Cognito 서비스
-2. **Create user pool** 클릭
-3. 설정:
+1. Go to [AWS Console](https://console.aws.amazon.com/) > Cognito service
+2. Click **Create user pool**
+3. Settings:
    - Sign-in options: **Email**
-   - Password policy: 8자 이상, 대소문자/숫자/특수문자
-   - MFA: **No MFA** (MVP용)
+   - Password policy: 8+ characters, uppercase/lowercase/numbers/special characters
+   - MFA: **No MFA** (for MVP)
    - Email: **Send email with Cognito**
 
-### 2.2 App Client 생성
+### 2.2 Creating an App Client
 
-1. User Pool 선택 > **App integration** 탭
+1. Select User Pool > **App integration** tab
 2. **Create app client**
-3. 설정:
+3. Settings:
    - App type: **Public client**
    - Client secret: **Don't generate**
    - Auth flows: **ALLOW_USER_SRP_AUTH**
 
-### 2.3 설정 값 적용
+### 2.3 Applying Configuration Values
 
 ```dart
 // lib/amplifyconfiguration.dart
@@ -113,37 +113,37 @@ const amplifyconfig = '''{
 }''';
 ```
 
-### 2.4 현재 설정 값
+### 2.4 Current Configuration Values
 
-| 항목 | 값 |
+| Item | Value |
 |------|-----|
-| Region | ap-northeast-2 (서울) |
+| Region | ap-northeast-2 (Seoul) |
 | User Pool ID | ap-northeast-2_4cNPZ8Ppf |
 | App Client ID | 227li53a3rdf98kfb7eu3i16gh |
 
 ---
 
-## 3. 체크리스트
+## 3. Checklist
 
-새 계정/프로젝트로 변경 시:
+When changing to a new account/project:
 
-- [ ] Google Cloud 프로젝트 생성
-- [ ] Google Maps API 키 발급
-- [ ] Maps JavaScript API 활성화
-- [ ] Maps SDK for Android 활성화
-- [ ] Maps SDK for iOS 활성화
-- [ ] API 키를 Android/iOS/Web 설정 파일에 적용
-- [ ] AWS Cognito User Pool 생성
-- [ ] AWS Cognito App Client 생성
-- [ ] amplifyconfiguration.dart 업데이트
+- [ ] Create Google Cloud project
+- [ ] Issue Google Maps API key
+- [ ] Enable Maps JavaScript API
+- [ ] Enable Maps SDK for Android
+- [ ] Enable Maps SDK for iOS
+- [ ] Apply API key to Android/iOS/Web configuration files
+- [ ] Create AWS Cognito User Pool
+- [ ] Create AWS Cognito App Client
+- [ ] Update amplifyconfiguration.dart
 
 ---
 
-## 4. 현재 사용 중인 API 키
+## 4. Currently Used API Keys
 
-> ⚠️ **주의**: 프로덕션에서는 이 값들을 환경 변수로 관리하세요.
+> ⚠️ **Warning**: In production, manage these values with environment variables.
 
-| 서비스 | 키 |
+| Service | Key |
 |--------|-----|
 | Google Maps | `AIzaSyAeVc1Xm5UHxNIeCxpQ3Oa1pvGAx1TacGM` |
 | Cognito User Pool | `ap-northeast-2_4cNPZ8Ppf` |

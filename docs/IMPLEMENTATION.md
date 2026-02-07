@@ -1,20 +1,20 @@
-# Tailinq Pet Tracker App - 구현 결과 문서
+# Tailinq Pet Tracker App - Implementation Document
 
-## 프로젝트 개요
+## Project Overview
 
-Tailinq는 반려동물 추적 디바이스용 크로스 플랫폼 모바일 앱 MVP입니다.
+Tailinq is a cross-platform mobile app MVP for a pet tracking device.
 
-### 핵심 기능
-- **Real-time Location Tracking**: 2초 간격으로 위치 업데이트
-- **Live Mode Toggle**: 실시간 추적 모드 켜기/끄기
-- **Device Status Display**: 배터리 레벨, 온라인/오프라인 상태 표시
-- **Bottom Navigation**: 3개 탭 (Home, Activity, Settings)
+### Core Features
+- **Real-time Location Tracking**: Location updates every 2 seconds
+- **Live Mode Toggle**: Turn real-time tracking mode on/off
+- **Device Status Display**: Battery level, online/offline status display
+- **Bottom Navigation**: 3 tabs (Home, Activity, Settings)
 
 ---
 
-## 기술 스택
+## Tech Stack
 
-| 분류 | 기술 |
+| Category | Technology |
 |------|------|
 | Framework | Flutter 3.10+ |
 | State Management | Riverpod 2.x |
@@ -24,9 +24,9 @@ Tailinq는 반려동물 추적 디바이스용 크로스 플랫폼 모바일 앱
 
 ---
 
-## 아키텍처
+## Architecture
 
-Clean Architecture 패턴을 적용하여 3개 레이어로 분리했습니다.
+Clean Architecture pattern applied with separation into 3 layers.
 
 ```
 ┌─────────────────────────────────────────────┐
@@ -41,57 +41,57 @@ Clean Architecture 패턴을 적용하여 3개 레이어로 분리했습니다.
 └─────────────────────────────────────────────┘
 ```
 
-### 폴더 구조
+### Folder Structure
 
 ```
 lib/
-├── main.dart                 # 앱 진입점 (ProviderScope)
-├── app.dart                  # MaterialApp + Router 설정
+├── main.dart                 # App entry point (ProviderScope)
+├── app.dart                  # MaterialApp + Router setup
 ├── core/
 │   ├── theme/
-│   │   └── app_theme.dart    # Material 3 테마 (Green 기반)
+│   │   └── app_theme.dart    # Material 3 theme (Green-based)
 │   └── constants/
-│       └── app_constants.dart # 상수 정의
+│       └── app_constants.dart # Constant definitions
 ├── data/
 │   ├── models/
-│   │   ├── device.dart       # Freezed Device 모델
+│   │   ├── device.dart       # Freezed Device model
 │   │   ├── device.freezed.dart
 │   │   ├── device.g.dart
-│   │   ├── location.dart     # Freezed Location 모델
+│   │   ├── location.dart     # Freezed Location model
 │   │   ├── location.freezed.dart
 │   │   └── location.g.dart
 │   ├── repositories/
-│   │   └── mock_device_repository.dart  # Mock 구현체
+│   │   └── mock_device_repository.dart  # Mock implementation
 │   └── sources/
-│       └── mock_data_source.dart        # Mock 데이터 생성
+│       └── mock_data_source.dart        # Mock data generation
 ├── domain/
 │   └── repositories/
-│       └── device_repository.dart       # 인터페이스 정의
+│       └── device_repository.dart       # Interface definition
 └── presentation/
     ├── providers/
-    │   ├── device_provider.dart    # 디바이스 상태 관리
-    │   └── location_provider.dart  # 위치 스트림 관리
+    │   ├── device_provider.dart    # Device state management
+    │   └── location_provider.dart  # Location stream management
     ├── router/
     │   └── app_router.dart         # GoRouter + ShellRoute
     ├── screens/
     │   ├── home/
-    │   │   └── home_screen.dart    # 메인 지도 화면
+    │   │   └── home_screen.dart    # Main map screen
     │   ├── activity/
     │   │   └── activity_screen.dart # Placeholder
     │   └── settings/
     │       └── settings_screen.dart # Placeholder
     └── widgets/
-        ├── blinking_live_badge.dart    # 깜빡이는 LIVE 뱃지
-        └── device_bottom_sheet.dart    # 디바이스 정보 시트
+        ├── blinking_live_badge.dart    # Blinking LIVE badge
+        └── device_bottom_sheet.dart    # Device info sheet
 ```
 
 ---
 
-## 주요 구현 상세
+## Key Implementation Details
 
-### 1. 데이터 모델 (Freezed)
+### 1. Data Models (Freezed)
 
-#### Device 모델
+#### Device Model
 ```dart
 @freezed
 class Device with _$Device {
@@ -108,7 +108,7 @@ class Device with _$Device {
 }
 ```
 
-#### Location 모델
+#### Location Model
 ```dart
 @freezed
 class Location with _$Location {
@@ -142,7 +142,7 @@ final locationStreamProvider = StreamProvider<Location?>(...);
 
 ### 3. Navigation (GoRouter)
 
-ShellRoute를 사용한 Bottom Navigation:
+Bottom Navigation using ShellRoute:
 
 ```dart
 ShellRoute(
@@ -155,30 +155,30 @@ ShellRoute(
 )
 ```
 
-### 4. UI 컴포넌트
+### 4. UI Components
 
 #### BlinkingLiveBadge
-- `AnimationController`를 사용한 깜빡임 효과
-- Red ↔ Orange 색상 전환
-- 800ms 주기 반복
+- Blinking effect using `AnimationController`
+- Red ↔ Orange color transition
+- 800ms cycle repeat
 
 #### DeviceBottomSheet
-- 펫 아바타 (CircleAvatar)
-- 이름 + LIVE 뱃지
-- 배터리 레벨 (아이콘 + 퍼센트)
-- 상태 표시 (Online/Offline/Low Battery)
-- Live Tracking 토글 스위치
-- 마지막 업데이트 시간
+- Pet avatar (CircleAvatar)
+- Name + LIVE badge
+- Battery level (icon + percentage)
+- Status display (Online/Offline/Low Battery)
+- Live Tracking toggle switch
+- Last update time
 
-#### HomeScreen (지도 Placeholder)
-- 녹색 그라데이션 배경
-- 그리드 패턴 (CustomPaint)
-- 애니메이션 마커 (Live 모드 시 이동)
-- 하단 DeviceBottomSheet
+#### HomeScreen (Map Placeholder)
+- Green gradient background
+- Grid pattern (CustomPaint)
+- Animated marker (moves in Live mode)
+- DeviceBottomSheet at bottom
 
 ---
 
-## 테마 설정
+## Theme Settings
 
 ```dart
 ThemeData(
@@ -194,27 +194,27 @@ ThemeData(
 
 ---
 
-## Mock 데이터
+## Mock Data
 
-`MockDataSource`에서 2개의 샘플 디바이스 제공:
-1. **Max**: 배터리 85%, Online 상태
-2. **Bella**: 배터리 45%, Low Battery 상태
+`MockDataSource` provides 2 sample devices:
+1. **Max**: Battery 85%, Online status
+2. **Bella**: Battery 45%, Low Battery status
 
-Live 모드 활성화 시 2초마다 위치가 랜덤하게 변경됩니다.
-
----
-
-## 향후 확장 계획
-
-1. **Google Maps 통합**: 현재 Placeholder를 `google_maps_flutter`로 교체
-2. **Geofencing**: Safe Zone 경계 이탈 알림
-3. **Activity History**: 이동 경로 기록 및 표시
-4. **Backend 연동**: Mock Repository를 실제 API 호출로 교체
-5. **Push Notifications**: 알림 기능 추가
+When Live mode is activated, location changes randomly every 2 seconds.
 
 ---
 
-## Git 커밋 히스토리
+## Future Expansion Plans
+
+1. **Google Maps Integration**: Replace current Placeholder with `google_maps_flutter`
+2. **Geofencing**: Safe Zone boundary breach alerts
+3. **Activity History**: Movement route recording and display
+4. **Backend Integration**: Replace Mock Repository with actual API calls
+5. **Push Notifications**: Add notification functionality
+
+---
+
+## Git Commit History
 
 ```
 e046538 Add live mode with blinking badge
