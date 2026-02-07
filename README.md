@@ -20,51 +20,21 @@ Pet Tracker Flutter application - Track your pets in real-time with GPS devices.
 
 ## Getting Started
 
-### Prerequisites
+See **[docs/GETTING_STARTED.md](docs/GETTING_STARTED.md)** for the full setup guide.
 
-- Flutter SDK 3.10+
-- Dart SDK 3.10+
-- Google Maps API Key
-- AWS Cognito User Pool (for authentication)
+**Quick start:**
 
-### Setup
-
-1. Clone the repository
 ```bash
 git clone https://github.com/uchaan/tailinq-app.git
 cd tailinq-app
-```
-
-2. Install dependencies
-```bash
 flutter pub get
-```
 
-3. Configure API Keys
-
-Copy the example files and add your API keys:
-
-```bash
-# Amplify (Cognito)
+# Copy and configure API keys (see GETTING_STARTED.md for details)
 cp lib/amplifyconfiguration.dart.example lib/amplifyconfiguration.dart
-# Edit with your Cognito Pool ID and App Client ID
-
-# Android
 cp android/app/src/main/AndroidManifest.xml.example android/app/src/main/AndroidManifest.xml
-# Edit with your Google Maps API Key
-
-# iOS
 cp ios/Runner/AppDelegate.swift.example ios/Runner/AppDelegate.swift
-# Edit with your Google Maps API Key
-```
 
-4. Generate Freezed code
-```bash
 dart run build_runner build --delete-conflicting-outputs
-```
-
-5. Run the app
-```bash
 flutter run
 ```
 
@@ -90,11 +60,12 @@ lib/
 
 ## Documentation
 
-- [REQUIREMENTS.md](docs/REQUIREMENTS.md) - MVP requirements & specification
+- [GETTING_STARTED.md](docs/GETTING_STARTED.md) - Build & run guide for new users
+- [SETUP.md](docs/SETUP.md) - External API setup guide (Google Maps, AWS Cognito)
 - [ARCHITECTURE.md](docs/ARCHITECTURE.md) - Architecture & technical details
+- [TESTING.md](docs/TESTING.md) - Testing guide & checklists
 - [ROADMAP.md](docs/ROADMAP.md) - Development roadmap and progress
-- [SETUP.md](docs/SETUP.md) - External API setup guide
-- [TESTING.md](docs/TESTING.md) - Testing guide
+- [REQUIREMENTS.md](docs/REQUIREMENTS.md) - MVP requirements & specification
 - [CLAUDE.md](CLAUDE.md) - AI assistant guidance
 
 ## License

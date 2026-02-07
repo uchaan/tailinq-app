@@ -506,9 +506,10 @@
 
 | Document | Description |
 |------|------|
-| `docs/REQUIREMENTS.md` | MVP requirements & specification |
+| `docs/GETTING_STARTED.md` | Build & run guide for new users |
+| `docs/SETUP.md` | External API setup guide (Google Maps, AWS Cognito) |
 | `docs/ARCHITECTURE.md` | Architecture & technical details |
+| `docs/TESTING.md` | Testing guide & checklists |
 | `docs/ROADMAP.md` | Progress tracking & development roadmap |
-| `docs/SETUP.md` | External API setup guide |
-| `docs/TESTING.md` | Testing guide |
+| `docs/REQUIREMENTS.md` | MVP requirements & specification |
 | `CLAUDE.md` | Claude Code guide |
