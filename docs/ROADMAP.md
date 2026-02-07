@@ -506,8 +506,9 @@
 
 | Document | Description |
 |------|------|
-| `docs/tailinq_app_mvp.md` | MVP requirements definition |
-| `docs/IMPLEMENTATION.md` | Implementation details document |
+| `docs/REQUIREMENTS.md` | MVP requirements & specification |
+| `docs/ARCHITECTURE.md` | Architecture & technical details |
+| `docs/ROADMAP.md` | Progress tracking & development roadmap |
+| `docs/SETUP.md` | External API setup guide |
 | `docs/TESTING.md` | Testing guide |
-| `docs/API_SETUP.md` | API key setup guide |
 | `CLAUDE.md` | Claude Code guide |

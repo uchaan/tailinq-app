@@ -90,7 +90,11 @@ lib/
 
 ## Documentation
 
-- [TODO.md](docs/TODO.md) - Development roadmap and progress
+- [REQUIREMENTS.md](docs/REQUIREMENTS.md) - MVP requirements & specification
+- [ARCHITECTURE.md](docs/ARCHITECTURE.md) - Architecture & technical details
+- [ROADMAP.md](docs/ROADMAP.md) - Development roadmap and progress
+- [SETUP.md](docs/SETUP.md) - External API setup guide
+- [TESTING.md](docs/TESTING.md) - Testing guide
 - [CLAUDE.md](CLAUDE.md) - AI assistant guidance
 
 ## License
